@@ -56,12 +56,16 @@ public class GUI extends JFrame {
 
                 }
                 sc.close();
+
+                // compile
             }
         });
 
         runButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 outputText.setText("hello");
+
+                // execute
             }
         });
     }
