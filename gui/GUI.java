@@ -2,17 +2,13 @@ package gui;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.*;
 
 public class GUI extends JFrame {
 
     public GUI() {
         super("Mega Impressive Programming Simulator");
-
     }
 
     public void start() {
@@ -20,8 +16,8 @@ public class GUI extends JFrame {
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
         setSize(screenSize.width / 2, screenSize.height / 2);
-        setLayout(new BorderLayout());
         setVisible(true);
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // panel init
@@ -33,12 +29,11 @@ public class GUI extends JFrame {
         JTextArea inputText = new JTextArea(5, 20);
         JScrollPane scrollPane = new JScrollPane(inputText);
         inputText.setSize(screenSize.width / 2, screenSize.height / 2);
-        myPanel.add(inputText, BorderLayout.NORTH);
+        myPanel.add(inputText, BorderLayout.PAGE_START);
 
         // output text area
         JLabel outputText = new JLabel();
-
-        myPanel.add(outputText, BorderLayout.SOUTH);
+        myPanel.add(outputText, BorderLayout.PAGE_END);
 
         // buttons + button panel
         JButton compileButton = new JButton("Compile");
@@ -47,7 +42,7 @@ public class GUI extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(compileButton);
         buttonPanel.add(runButton);
-        myPanel.add(buttonPanel, BorderLayout.SOUTH);
+        myPanel.add(buttonPanel, BorderLayout.CENTER);
 
         // action listeners
         compileButton.addActionListener(new ActionListener() {
