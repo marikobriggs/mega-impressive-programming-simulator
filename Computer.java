@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -86,6 +88,21 @@ public class Computer {
 	}
 	
 	/**
+	 * Given a register mode instruciton, returns the register numbers for dr, s1, & constant in an array.
+	 */
+	private int[] parseImmedRegMode(String instr) {
+		String noSpaceString = instr.replaceAll(" ", "");
+	    Scanner s = new Scanner(noSpaceString);
+	    s.useDelimiter("[,$]");
+	    s.next(); // get rid of ADD at start of string
+	    int[] regArray = new int[3];
+	    regArray[0] = Integer.parseInt(s.next());
+	    regArray[1] = Integer.parseInt(s.next());
+	    regArray[2] = Integer.parseInt(s.next());
+	    s.close();
+		return regArray;
+	}
+	/**
 	 * Executes the add operation from the String representation of the instruction in IR. 
 	 * This is a register mode instruction of the form <ADD $DR, $S1, $S2>
 	 */
@@ -121,28 +138,59 @@ public class Computer {
 	 */
 	public void executeOr() {
 		int[] regArray = parseRegistersRegMode(myIR);
-		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
-		myRegisters[regArray[0]].setValue2sComp(sum); // modify from ADD to OR
+		
+		char sr1[] = myRegisters[regArray[1]].getBits();
+		char sr2[] = myRegisters[regArray[2]].getBits();
+		char newOR[] = new char[sr1.length];
+		
+		for (int i = 0; i < sr1.length; i++) {
+			if (sr1[i] == sr2[i]) {
+				newOR[i] = 1;
+			}
+			else {
+				newOR[i] = 0;
+			}
+		}
+		
+		myRegisters[regArray[0]].setBits(newOR); // modify from ADD to OR
 	}
 	
 	public void executeORI(String bitstr1, int immed) {
-		int dr = myIR.substring(beginIndex);
-		int sr1 = myIR.subString(beginIndex, endIndex);
-		int sr2 = myIR.substring(beginIndex);
-		char str1arr[] = bitstr1.toCharArray();
-		BitString bitstr = new BitString();
-		bitstr.setValue2sComp(immed);
-		char str2arr[] = bitstr.getBits();
-		char newStr[] = new char[bitstr1.length()];
-		for (int i = 0; i < bitstr1.length(); i++) {
-			if (str1arr[i] == str2arr[i]) {
-				newStr[i] = 1;
-			}
-			else {
-				newStr[i] = 0;
-			}
-		}
-		myRegisters[dr] = setBits(newStr);
+		int[] regArray = parseImmedRegMode(myIR);
+		
+//		regArray[1].
+//		
+//		char str1arr[] = bitstr1.toCharArray();
+//		BitString bitstr = new BitString();
+//		bitstr.setValue2sComp(immed);
+//		char str2arr[] = bitstr.getBits();
+//		char newStr[] = new char[bitstr1.length()];
+//		for (int i = 0; i < bitstr1.length(); i++) {
+//			if (str1arr[i] == str2arr[i]) {
+//				newStr[i] = 1;
+//			}
+//			else {
+//				newStr[i] = 0;
+//			}
+//		}
+//		myRegisters[dr] = setBits(newStr);
+		
+//		int[] regArray = parseRegistersRegMode(myIR);
+//		
+//		char sr1[] = myRegisters[regArray[1]].getBits();
+//		char sr2[] = myRegisters[regArray[2]].getBits();
+//		char newOR[] = new char[sr1.length];
+//		
+//		for (int i = 0; i < sr1.length; i++) {
+//			if (sr1[i] == sr2[i]) {
+//				newOR[i] = 1;
+//			}
+//			else {
+//				newOR[i] = 0;
+//			}
+//		}
+//		
+//		myRegisters[regArray[0]].setBits(newOR);
 		
 	}
 //	/**
@@ -235,4 +283,40 @@ public class Computer {
 //		System.out.println();
 //
 //	}
+	
+	public void createMap() { 
+		Map<String, Integer> hmap = new HashMap<String, Integer>();
+		hmap.put("$zero", 0);
+	    hmap.put("$at", 1);
+	    hmap.put("$v0", 2);
+	    hmap.put("$v1", 3);
+	    hmap.put("$a0", 4);
+	    hmap.put("$a1", 5);
+	    hmap.put("$a2", 6);
+	    hmap.put("$a3", 7);
+	    hmap.put("$t0", 8);
+	    hmap.put("$t1", 9);
+	    hmap.put("$t2", 10);
+	    hmap.put("$t3", 11);
+	    hmap.put("$t4", 12);
+	    hmap.put("$t5", 13);
+	    hmap.put("$t6", 14);
+	    hmap.put("$t7", 15);
+	    hmap.put("$s0", 16);
+	    hmap.put("$s1", 17);
+	    hmap.put("$s2", 18);
+	    hmap.put("$s3", 19);
+	    hmap.put("$t2", 20);
+	    hmap.put("$t3", 21);
+	    hmap.put("$t4", 22);
+	    hmap.put("$t5", 23);
+	    hmap.put("$t6", 24);
+	    hmap.put("$t7", 25);
+	    hmap.put("$k0", 26);
+	    hmap.put("$k1", 27);
+	    hmap.put("$gp", 28);
+	    hmap.put("$sp", 29);
+	    hmap.put("$fp", 30);
+	    hmap.put("$ra", 31);
+	}
 }
