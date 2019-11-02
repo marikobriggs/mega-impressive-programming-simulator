@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - GUI",
+            "request": "launch",
+            "mainClass": "gui.GUI",
+            "projectName": "mega-impressive-programming-simulator"
+        }
+    ]
+}
