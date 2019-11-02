@@ -41,6 +41,18 @@ public class Computer {
 			myDataMemory[i].setValue(0);
 		}
 	}
+	
+	/**
+	 * Reads strings from array, checks that they represent valid instructions, and places them in instruction memory.
+	 * 
+	 * @param instructions the array of instructions (Strings)
+	 */
+	public void compile(String[] instructions) {
+		for (int i = 0; i < instructions.length; i++) {
+			
+		}
+	}
+	
 
 	public void execute() {
 		String input = "ADD $t1, $t2, $t3";
@@ -55,6 +67,27 @@ public class Computer {
 		System.out.println("Shift amt: " + shiftAmt);
 		System.out.println("Func code: " + funcCode);
 	}
+	
+	
+	/**
+	 * Executes the add operation from the String representation of the instruction in IR. 
+	 * This is a register mode instruction of the form <ADD $DR, $S1, $S2>
+	 */
+	public void executeAdd() {
+		
+		Scanner s = new Scanner(myIR);
+		Scanner.setDelimiter[]
+		
+		
+		int dr = myIR.substring(4, 3);
+		int sr1 = myIR.substring(7, 3);
+		int sr2 = myIR.substring(7, 3);
+		int sum = myRegisters[sr1].getValue2sComp() + myRegisters[sr2].getValue2sComp();
+		myRegisters[dr].setValue2sComp(sum);
+		}
+	}
+	
+	
 //	/**
 //	 * Loads a 16 bit word into memory at the given address. 
 //	 * @param address memory address
