@@ -70,21 +70,59 @@ public class Computer {
 	
 	
 	/**
+	 * Given a register mode instruciton, returns the register numbers for dr, s1, & s2 in an array.
+	 */
+	private int[] parseRegistersRegMode(String instr) {
+	    String noSpaceString = instr.replaceAll(" ", "");
+	    Scanner s = new Scanner(noSpaceString);
+	    s.useDelimiter("[,$]");
+	    s.next(); // get rid of ADD at start of string
+	    int[] regArray = new int[3];
+	    regArray[0] = Integer.parseInt(s.next());
+	    regArray[1] = Integer.parseInt(s.next());
+	    regArray[2] = Integer.parseInt(s.next());
+	    s.close();
+		return regArray;
+	}
+	
+	/**
 	 * Executes the add operation from the String representation of the instruction in IR. 
 	 * This is a register mode instruction of the form <ADD $DR, $S1, $S2>
 	 */
 	public void executeAdd() {
-		
-		Scanner s = new Scanner(myIR);
-		Scanner.setDelimiter[]
-		
-		
-		int dr = myIR.substring(4, 3);
-		int sr1 = myIR.substring(7, 3);
-		int sr2 = myIR.substring(7, 3);
-		int sum = myRegisters[sr1].getValue2sComp() + myRegisters[sr2].getValue2sComp();
-		myRegisters[dr].setValue2sComp(sum);
-		}
+		int[] regArray = parseRegistersRegMode(myIR);
+		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
+		myRegisters[regArray[0]].setValue2sComp(sum);
+	}
+	
+	/**
+	 * Executes the addu operation from the String representation of the instruction in IR. 
+	 * This is a register mode instruction of the form <ADDU $DR, $S1, $S2>
+	 */
+	public void executeAddU() {
+		int[] regArray = parseRegistersRegMode(myIR);
+		int sum = myRegisters[regArray[1]].getValue() + myRegisters[regArray[2]].getValue();
+		myRegisters[regArray[0]].setValue(sum);
+	}
+	
+	/**
+	 * Executes the and operation from the String representation of the instruction in IR. 
+	 * This is a register mode instruction of the form <AND $DR, $S1, $S2>
+	 */
+	public void executeAnd() {
+		int[] regArray = parseRegistersRegMode(myIR);
+		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
+		myRegisters[regArray[0]].setValue2sComp(sum); // modify from ADD to AND
+	}
+	
+	/**
+	 * Executes the or operation from the String representation of the instruction in IR. 
+	 * This is a register mode instruction of the form <OR $DR, $S1, $S2>
+	 */
+	public void executeOr() {
+		int[] regArray = parseRegistersRegMode(myIR);
+		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
+		myRegisters[regArray[0]].setValue2sComp(sum); // modify from ADD to OR
 	}
 	
 	public void executeORI(String bitstr1, int immed) {
