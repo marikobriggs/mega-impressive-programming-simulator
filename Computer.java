@@ -87,7 +87,26 @@ public class Computer {
 		}
 	}
 	
-	
+	public void executeORI(String bitstr1, int immed) {
+		int dr = myIR.substring(beginIndex);
+		int sr1 = myIR.subString(beginIndex, endIndex);
+		int sr2 = myIR.substring(beginIndex);
+		char str1arr[] = bitstr1.toCharArray();
+		BitString bitstr = new BitString();
+		bitstr.setValue2sComp(immed);
+		char str2arr[] = bitstr.getBits();
+		char newStr[] = new char[bitstr1.length()];
+		for (int i = 0; i < bitstr1.length(); i++) {
+			if (str1arr[i] == str2arr[i]) {
+				newStr[i] = 1;
+			}
+			else {
+				newStr[i] = 0;
+			}
+		}
+		myRegisters[dr] = setBits(newStr);
+		
+	}
 //	/**
 //	 * Loads a 16 bit word into memory at the given address. 
 //	 * @param address memory address
