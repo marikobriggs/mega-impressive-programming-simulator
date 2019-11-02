@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Computer class comprises of memory, registers, and
  * can execute the instructions based on PC and IR 
@@ -40,6 +42,19 @@ public class Computer {
 		}
 	}
 
+	public void execute() {
+		String input = "ADD $t1, $t2, $t3";
+		Scanner scan = new Scanner(input.replace(",", ""));
+		String instr = scan.next();
+		String destR = scan.next();
+		String shiftAmt = scan.next();
+		String funcCode = scan.next(); 
+		scan.close();
+		System.out.println("Instruction: " + instr);
+		System.out.println("Dest reg: " +  destR);
+		System.out.println("Shift amt: " + shiftAmt);
+		System.out.println("Func code: " + funcCode);
+	}
 //	/**
 //	 * Loads a 16 bit word into memory at the given address. 
 //	 * @param address memory address
