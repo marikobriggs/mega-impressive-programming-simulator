@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -17,8 +18,8 @@ public class Computer {
 	private BitString myRegisters[];
 	private BitString myDataMemory[];
 	private String myInstMemory[];
-	private String myPC;
-	private String myIR;
+	private int myPC;
+	private int myIR;
 
 	/**
 	 * Initializes all the memory to 0, registers to 0 to 32,
@@ -26,10 +27,8 @@ public class Computer {
 	 * Represents the initial state 
 	 */
 	public Computer() {
-		myPC = "";
-		myPC = "";
-		myIR = "";
-		myIR = "";
+		myPC = 0;
+		myIR = 0;
 		myRegisters = new BitString[MAX_REGISTERS];
 		for (int i = 0; i < MAX_REGISTERS; i++) {
 			myRegisters[i] = new BitString();
@@ -49,25 +48,29 @@ public class Computer {
 	 * 
 	 * @param instructions the array of instructions (Strings)
 	 */
-	public void compile(String[] instructions) {
-		for (int i = 0; i < instructions.length; i++) {
+	public void compile(List<String> instructions) {
+		for (int i = 0; i < instructions.size(); i++) {
 			
 		}
 	}
 	
 
-	public void execute() {
-		String input = "ADD $t1, $t2, $t3";
-		Scanner scan = new Scanner(input.replace(",", ""));
-		String instr = scan.next();
-		String destR = scan.next();
-		String shiftAmt = scan.next();
-		String funcCode = scan.next(); 
-		scan.close();
-		System.out.println("Instruction: " + instr);
-		System.out.println("Dest reg: " +  destR);
-		System.out.println("Shift amt: " + shiftAmt);
-		System.out.println("Func code: " + funcCode);
+	public String[] execute() {
+		
+		
+		String[] output = new String[5];
+		return output;
+//		String input = "ADD $t1, $t2, $t3";
+//		Scanner scan = new Scanner(input.replace(",", ""));
+//		String instr = scan.next();
+//		String destR = scan.next();
+//		String shiftAmt = scan.next();
+//		String funcCode = scan.next(); 
+//		scan.close();
+//		System.out.println("Instruction: " + instr);
+//		System.out.println("Dest reg: " +  destR);
+//		System.out.println("Shift amt: " + shiftAmt);
+//		System.out.println("Func code: " + funcCode);
 	}
 	
 	
@@ -107,7 +110,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <ADD $DR, $S1, $S2>
 	 */
 	public void executeAdd() {
-		int[] regArray = parseRegistersRegMode(myIR);
+		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
 		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
 		myRegisters[regArray[0]].setValue2sComp(sum);
 	}
@@ -117,7 +120,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <ADDU $DR, $S1, $S2>
 	 */
 	public void executeAddU() {
-		int[] regArray = parseRegistersRegMode(myIR);
+		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
 		int sum = myRegisters[regArray[1]].getValue() + myRegisters[regArray[2]].getValue();
 		myRegisters[regArray[0]].setValue(sum);
 	}
@@ -127,7 +130,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <AND $DR, $S1, $S2>
 	 */
 	public void executeAnd() {
-		int[] regArray = parseRegistersRegMode(myIR);
+		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
 		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
 		myRegisters[regArray[0]].setValue2sComp(sum); // modify from ADD to AND
 	}
@@ -137,7 +140,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <OR $DR, $S1, $S2>
 	 */
 	public void executeOr() {
-		int[] regArray = parseRegistersRegMode(myIR);
+		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
 		
 		char sr1[] = myRegisters[regArray[1]].getBits();
 		char sr2[] = myRegisters[regArray[2]].getBits();
@@ -156,7 +159,7 @@ public class Computer {
 	}
 	
 	public void executeORI(String bitstr1, int immed) {
-		int[] regArray = parseImmedRegMode(myIR);
+		int[] regArray = parseImmedRegMode(myInstMemory[myIR]);
 		
 //		regArray[1].
 //		
