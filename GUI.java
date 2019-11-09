@@ -1,71 +1,130 @@
-package gui;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.util.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
+/**
+ * GUI to display running MIPS programs
+ */
 public class GUI extends JFrame {
-
-    public GUI() {
+	
+    /** Auto-generated Serial Version UID */
+	private static final long serialVersionUID = 7605948922464541352L;
+	
+	private JLabel myInputLabel;
+	private JLabel myOutputLabel;
+	private JPanel myPanel;
+	private RegistersPanel myRegistersPanel;
+	private JTextArea myInputTextArea;
+	private JScrollPane myInputScrollPane;
+	private JTextArea myOutputTextArea;
+	private JScrollPane myOutputScrollPane;
+    JButton myAssembleButton;
+    JButton myRunButton;
+    private JPanel myButtonPanel;
+    private Computer myComputer;
+    
+    /**
+     * Create a new GUI to display running MIPS programs
+     * @param computer the computer (back-end) used to simulate running MIPS
+     */
+	private GUI(Computer computer) {
         super("Mega Impressive Programming Simulator");
-    }
+        myPanel = new JPanel();
+        myRegistersPanel = new RegistersPanel();
+        myInputLabel = new JLabel("Input MIPS code below");
+        myOutputLabel = new JLabel("The output appears here");
+        myInputTextArea = new JTextArea(5, 20);
+        myInputScrollPane = new JScrollPane(myInputTextArea);
+        myOutputTextArea = new JTextArea(5, 20);
+        myOutputScrollPane = new JScrollPane(myOutputTextArea);
+        myAssembleButton = new JButton("Assemble");
+        myRunButton = new JButton("Run");
+        myButtonPanel = new JPanel();
+        start();
 
-    public void start() {
+    }
+	
+	/**
+	 * Initialize GUI components
+	 */
+    private void start() {
         // init stuff
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
-        setSize(screenSize.width / 2, screenSize.height / 2);
         setVisible(true);
-        setLayout(new BorderLayout());
+        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.PAGE_AXIS));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // panel init
-        JPanel myPanel = new JPanel();
-        myPanel.setBounds(300, 300, 400, 400);
         add(myPanel);
 
         // input text area
-        JTextArea inputText = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(inputText);
-        inputText.setSize(screenSize.width / 2, screenSize.height / 2);
-        myPanel.add(inputText, BorderLayout.PAGE_START);
-
+        myInputScrollPane.setSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+        myInputScrollPane.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+        myPanel.add(myInputLabel);
+        myPanel.add(myInputScrollPane);
+        
         // output text area
-        JLabel outputText = new JLabel();
-        myPanel.add(outputText, BorderLayout.PAGE_END);
+        myPanel.add(myOutputLabel);
+        myOutputScrollPane.setSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+        myOutputScrollPane.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+        myPanel.add(myOutputScrollPane);
 
         // buttons + button panel
-        JButton compileButton = new JButton("Compile");
-        JButton runButton = new JButton("Run");
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(compileButton);
-        buttonPanel.add(runButton);
-        myPanel.add(buttonPanel, BorderLayout.CENTER);
-
-        // action listeners
-        compileButton.addActionListener(new ActionListener() {
+        myButtonPanel.add(myAssembleButton);
+        myButtonPanel.add(myRunButton);
+        myPanel.add(myButtonPanel);
+        
+        // myPanel.add(myRegistersPanel);
+        
+        this.pack();
+        setActionListeners();
+    }
+    
+    /**
+     * Set the action listeners for the compile and run buttons
+     */
+    private void setActionListeners() {
+        myAssembleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String input = inputText.getText();
-                ArrayList<String> inputArr = new ArrayList<String>();
+                String input = myInputTextArea.getText();
+                ArrayList<String> inputLines = new ArrayList<String>();
                 Scanner sc = new Scanner(input);
                 while (sc.hasNextLine()) {
-                    String line = sc.nextLine();
-                    inputArr.add(line);
-
+                	inputLines.add(sc.nextLine());
                 }
                 sc.close();
-
-                // compile
+                try {
+					myComputer.assemble(inputLines);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
             }
         });
 
-        runButton.addActionListener(new ActionListener() {
+        myRunButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                outputText.setText("hello");
-
-                // execute
+            	myOutputTextArea.append("hello");
+            	
+                List<String> outputLines = myComputer.execute();
+                for (String s : outputLines) {
+                	myOutputTextArea.append(s);
+                }
             }
         });
     }
@@ -73,8 +132,7 @@ public class GUI extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI gui = new GUI();
-                gui.start();
+                new GUI(new Computer());
             }
         });
     }

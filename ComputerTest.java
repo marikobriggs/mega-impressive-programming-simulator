@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
  */
 
 /**
- * @author Thaddaeus
- *
+ * Class to test the Computer class's functionality
  */
 class ComputerTest {
 

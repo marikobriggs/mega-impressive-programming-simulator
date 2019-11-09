@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ public class Computer {
 	private BitString myRegisters[];
 	private BitString myDataMemory[];
 	private String myInstMemory[];
+	private Map<String, Integer> myRegisterMappings;
 	private int myPC;
 	private int myIR;
 
@@ -27,6 +30,7 @@ public class Computer {
 	 * Represents the initial state 
 	 */
 	public Computer() {
+		createRegisterMappings();
 		myPC = 0;
 		myIR = 0;
 		myRegisters = new BitString[MAX_REGISTERS];
@@ -44,21 +48,109 @@ public class Computer {
 	}
 	
 	/**
+	 * Returns the register file for this Computer
+	 * @return this Computer's register file
+	 */
+	BitString[] getRegisters() {
+		return myRegisters;
+	}
+	
+	/**
 	 * Reads strings from array, checks that they represent valid instructions, and places them in instruction memory.
 	 * 
+	 * Note that assembling is being simply simulated and the instructions are not actually being assembled to machine code (bits).
+	 * 
 	 * @param instructions the array of instructions (Strings)
+	 * @throws IOException when instructions don't fit in memory
 	 */
-	public void compile(List<String> instructions) {
+	public void assemble(List<String> instructions) throws IOException {
+		if (instructions.size() > myInstMemory.length) {
+			throw new IOException("Too many instructions to fit in instruction memory");
+		}
 		for (int i = 0; i < instructions.size(); i++) {
-			
+			myInstMemory[i] = instructions.get(i);
 		}
 	}
 	
+	/**
+	 * Execute the instructions in the instruction memory. 
+	 * At this stage, can assume that the instructions have register markings of the form $n for 0 <= n <= 31,
+	 * as this is done at "assemble" time.
+	 * 
+	 * Additionally, opcodes will be all uppercase and instruction tokens will be comma and space separated.
+	 * e.g. "ADDI $1, $15, -5"
+	 * @return the output of the execution
+	 */
+	public List<String> execute() {
+		
+		List<String> output = new ArrayList<String>();
+		
+		for (int i = 0; i < myInstMemory.length; i++) {
+			switch(getOpcode(myInstMemory[i]))
+			{
+			   case "ADD" :
+			      executeAdd();
+			      break; 
+			   
+			   case "ADDU" :
+			      executeAddu();
+			      break;
+			      
+			   case "AND" :
+				  executeAnd();
+				  break;
+			      
+			   case "OR" :
+				  executeOr();
+				  break;
+				  
+			   case "ADDI" :
+				  executeAddi();
+				  break;
+				  
+			   case "ADDIU" :
+				  executeAddiu();
+				  break;
+				  
+			   case "ANDI" :
+				  executeAndi();
+				  break;
+				  
+			   case "ORI" :
+				  executeOri();
+				  break;
+				  
+			   case "LW" :
+				  executeLw();
+				  break;
+				  
+			   case "SW" :
+				  executeSw();
+				  break;
+				  
+			   case "BEQ" :
+			      executeBeq();
+				  break;
+				  
+			   case "BNE" :
+			      executeBne();
+				  break;
+				  
+			   case "J" :
+			      executeJ();
+				  break;
+				  
+			   case "JR" :
+				  executeJr();
+				  break;
+				  
+			   default :    // no opcodes matched!
+			      // Statements
+			}
+		}
 
-	public String[] execute() {
 		
 		
-		String[] output = new String[5];
 		return output;
 //		String input = "ADD $t1, $t2, $t3";
 //		Scanner scan = new Scanner(input.replace(",", ""));
@@ -73,9 +165,9 @@ public class Computer {
 //		System.out.println("Func code: " + funcCode);
 	}
 	
-	
+
 	/**
-	 * Given a register mode instruciton, returns the register numbers for dr, s1, & s2 in an array.
+	 * Given a register mode instruction, returns the register numbers for dr, s1, & s2 in an array.
 	 */
 	private int[] parseRegistersRegMode(String instr) {
 	    String noSpaceString = instr.replaceAll(" ", "");
@@ -91,7 +183,7 @@ public class Computer {
 	}
 	
 	/**
-	 * Given a register mode instruciton, returns the register numbers for dr, s1, & constant in an array.
+	 * Given a register mode instruction, returns the register numbers for dr, s1, & constant in an array.
 	 */
 	private int[] parseImmedRegMode(String instr) {
 		String noSpaceString = instr.replaceAll(" ", "");
@@ -119,7 +211,7 @@ public class Computer {
 	 * Executes the addu operation from the String representation of the instruction in IR. 
 	 * This is a register mode instruction of the form <ADDU $DR, $S1, $S2>
 	 */
-	public void executeAddU() {
+	public void executeAddu() {
 		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
 		int sum = myRegisters[regArray[1]].getValue() + myRegisters[regArray[2]].getValue();
 		myRegisters[regArray[0]].setValue(sum);
@@ -141,7 +233,6 @@ public class Computer {
 	 */
 	public void executeOr() {
 		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
-		
 		char sr1[] = myRegisters[regArray[1]].getBits();
 		char sr2[] = myRegisters[regArray[2]].getBits();
 		char newOR[] = new char[sr1.length];
@@ -158,9 +249,104 @@ public class Computer {
 		myRegisters[regArray[0]].setBits(newOR); // modify from ADD to OR
 	}
 	
-	public void executeORI(String bitstr1, int immed) {
+	private void executeOri() {
 		int[] regArray = parseImmedRegMode(myInstMemory[myIR]);
 		
+	}
+	
+	private void executeJr() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeJ() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeBne() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeBeq() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeSw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeLw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeAndi() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeAddiu() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void executeAddi() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void createRegisterMappings() { 
+		myRegisterMappings = new HashMap<String, Integer>();
+		myRegisterMappings.put("$zero", 0);
+		myRegisterMappings.put("$at", 1);
+		myRegisterMappings.put("$v0", 2);
+		myRegisterMappings.put("$v1", 3);
+		myRegisterMappings.put("$a0", 4);
+	    myRegisterMappings.put("$a1", 5);
+	    myRegisterMappings.put("$a2", 6);
+	    myRegisterMappings.put("$a3", 7);
+	    myRegisterMappings.put("$t0", 8);
+	    myRegisterMappings.put("$t1", 9);
+	    myRegisterMappings.put("$t2", 10);
+	    myRegisterMappings.put("$t3", 11);
+	    myRegisterMappings.put("$t4", 12);
+	    myRegisterMappings.put("$t5", 13);
+	    myRegisterMappings.put("$t6", 14);
+	    myRegisterMappings.put("$t7", 15);
+	    myRegisterMappings.put("$s0", 16);
+	    myRegisterMappings.put("$s1", 17);
+	    myRegisterMappings.put("$s2", 18);
+	    myRegisterMappings.put("$s3", 19);
+	    myRegisterMappings.put("$t2", 20);
+	    myRegisterMappings.put("$t3", 21);
+	    myRegisterMappings.put("$t4", 22);
+	    myRegisterMappings.put("$t5", 23);
+	    myRegisterMappings.put("$t6", 24);
+	    myRegisterMappings.put("$t7", 25);
+	    myRegisterMappings.put("$k0", 26);
+	    myRegisterMappings.put("$k1", 27);
+	    myRegisterMappings.put("$gp", 28);
+	    myRegisterMappings.put("$sp", 29);
+	    myRegisterMappings.put("$fp", 30);
+	    myRegisterMappings.put("$ra", 31);
+	}
+	
+	/**
+	 * Given an instruction String, returns the String containing just the opcode (name of instruction)
+	 * @param string full, original instruction
+	 * @return opcode name of instruction
+	 */
+	private String getOpcode(String instr) {
+		Scanner s = new Scanner(instr);
+		s.useDelimiter(" ");
+		String opcode = s.next();
+		s.close();
+		return opcode;
+	}
 //		regArray[1].
 //		
 //		char str1arr[] = bitstr1.toCharArray();
@@ -195,7 +381,6 @@ public class Computer {
 //		
 //		myRegisters[regArray[0]].setBits(newOR);
 		
-	}
 //	/**
 //	 * Loads a 16 bit word into memory at the given address. 
 //	 * @param address memory address
@@ -287,39 +472,5 @@ public class Computer {
 //
 //	}
 	
-	public void createMap() { 
-		Map<String, Integer> hmap = new HashMap<String, Integer>();
-		hmap.put("$zero", 0);
-	    hmap.put("$at", 1);
-	    hmap.put("$v0", 2);
-	    hmap.put("$v1", 3);
-	    hmap.put("$a0", 4);
-	    hmap.put("$a1", 5);
-	    hmap.put("$a2", 6);
-	    hmap.put("$a3", 7);
-	    hmap.put("$t0", 8);
-	    hmap.put("$t1", 9);
-	    hmap.put("$t2", 10);
-	    hmap.put("$t3", 11);
-	    hmap.put("$t4", 12);
-	    hmap.put("$t5", 13);
-	    hmap.put("$t6", 14);
-	    hmap.put("$t7", 15);
-	    hmap.put("$s0", 16);
-	    hmap.put("$s1", 17);
-	    hmap.put("$s2", 18);
-	    hmap.put("$s3", 19);
-	    hmap.put("$t2", 20);
-	    hmap.put("$t3", 21);
-	    hmap.put("$t4", 22);
-	    hmap.put("$t5", 23);
-	    hmap.put("$t6", 24);
-	    hmap.put("$t7", 25);
-	    hmap.put("$k0", 26);
-	    hmap.put("$k1", 27);
-	    hmap.put("$gp", 28);
-	    hmap.put("$sp", 29);
-	    hmap.put("$fp", 30);
-	    hmap.put("$ra", 31);
-	}
+
 }
