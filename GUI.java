@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 /**
  * GUI to display running MIPS programs
@@ -37,6 +38,7 @@ public class GUI extends JFrame {
     JButton myRunButton;
     private JPanel myButtonPanel;
     private Computer myComputer;
+	private JScrollPane myRegistersScrollPane;
     
     /**
      * Create a new GUI to display running MIPS programs
@@ -44,8 +46,9 @@ public class GUI extends JFrame {
      */
 	private GUI(Computer computer) {
         super("Mega Impressive Programming Simulator");
+        myComputer = computer;
         myPanel = new JPanel();
-        myRegistersPanel = new RegistersPanel();
+        myRegistersPanel = new RegistersPanel(computer.getRegisters());
         myInputLabel = new JLabel("Input MIPS code below");
         myOutputLabel = new JLabel("The output appears here");
         myInputTextArea = new JTextArea(5, 20);
@@ -71,18 +74,24 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // panel init
-        add(myPanel);
+        this.add(myPanel, BorderLayout.WEST);
 
         // input text area
-        myInputScrollPane.setSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
-        myInputScrollPane.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+        myInputScrollPane.setSize(new Dimension(screenSize.width / 4, screenSize.height / 3));
+        myInputScrollPane.setPreferredSize(new Dimension(screenSize.width / 4, screenSize.height / 3));
         myPanel.add(myInputLabel);
         myPanel.add(myInputScrollPane);
         
+        // add padding between the text areas
+        JPanel paddingPanel = new JPanel();
+        paddingPanel.setBorder(new EmptyBorder(10, 0, 0, 10));
+        myPanel.add(paddingPanel);
+        
+        
         // output text area
         myPanel.add(myOutputLabel);
-        myOutputScrollPane.setSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
-        myOutputScrollPane.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+        myOutputScrollPane.setSize(new Dimension(screenSize.width / 4, screenSize.height / 3));
+        myOutputScrollPane.setPreferredSize(new Dimension(screenSize.width / 4, screenSize.height / 3));
         myPanel.add(myOutputScrollPane);
 
         // buttons + button panel
@@ -90,14 +99,15 @@ public class GUI extends JFrame {
         myButtonPanel.add(myRunButton);
         myPanel.add(myButtonPanel);
         
-        // myPanel.add(myRegistersPanel);
+        myRegistersScrollPane = new JScrollPane(myRegistersPanel);
+        this.add(myRegistersScrollPane, BorderLayout.EAST);
         
         this.pack();
         setActionListeners();
     }
     
     /**
-     * Set the action listeners for the compile and run buttons
+     * Set the action listeners for the assemble and run buttons
      */
     private void setActionListeners() {
         myAssembleButton.addActionListener(new ActionListener() {
@@ -125,6 +135,7 @@ public class GUI extends JFrame {
                 for (String s : outputLines) {
                 	myOutputTextArea.append(s);
                 }
+                myRegistersPanel.updateRegisters(myComputer.getRegisters());
             }
         });
     }

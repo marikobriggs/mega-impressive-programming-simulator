@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 /**
  * A BitString class represents a series of 1s and 0s and can hold up to
- * a maximum of 16 bits and also keeps track of the number of bits stored.
+ * a maximum of 32 bits and also keeps track of the number of bits stored.
  * It has operations to do various operations associated with 1s and 0s - 
  * substring, append, copy, setting and getting 2s complement value, etc. 
  * @author mmuppa
@@ -11,10 +11,10 @@ import java.util.Arrays;
 public class BitString {
 
 	// Constants for range checking
-	private final static int MAX_BITS = 16;
-	private final static int MAX_VALUE = 32767; // 2^15 - 1
-	private final static int MIN_VALUE = -32768; // -2^15
-	private final static int MAX_UNSIGNED_VALUE = 65535; // 2^16 - 1
+	private final static int MAX_BITS = 32;
+	private final static int MAX_VALUE = 2147483647; // 2^32 - 1
+	private final static int MIN_VALUE = -2147483648; // -2^32
+	private final static long MAX_UNSIGNED_VALUE = 4294967295L; // 2^32 - 1
 	
 	
 	private char[] mBits;
@@ -108,21 +108,23 @@ public class BitString {
 	}
 
 	/**
-	 * Displays the BitString in groups of four or
-	 * in one group of 16. 
+	 * Returns string for displaying the BitString in groups of four or
+	 * in one group of 32 
 	 * @param groupsOfFour 
 	 */
-	public void display(boolean groupsOfFour) {
+	public String display(boolean groupsOfFour) {
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < mLength; i++) {
 			if (groupsOfFour && (i % 4 == 0) && i != 0) {
-				System.out.print(" ");
+				sb.append(" ");
 			}
 			if (mBits[i] == '0') {
-				System.out.print("0");
+				sb.append("0");
 			} else {
-				System.out.print("1");
+				sb.append("1");
 			}
 		}
+		return sb.toString();
 	}
 
 	/**

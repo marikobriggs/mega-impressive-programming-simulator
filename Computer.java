@@ -22,17 +22,17 @@ public class Computer {
 	private String myInstMemory[];
 	private Map<String, Integer> myRegisterMappings;
 	private int myPC;
-	private int myIR;
+	private String myIR;
 
 	/**
 	 * Initializes all the memory to 0, registers to 0 to 32,
-	 * and PC, IR to empty strings
+	 * and PC to 0, IR to empty string
 	 * Represents the initial state 
 	 */
 	public Computer() {
 		createRegisterMappings();
 		myPC = 0;
-		myIR = 0;
+		myIR = "";
 		myRegisters = new BitString[MAX_REGISTERS];
 		for (int i = 0; i < MAX_REGISTERS; i++) {
 			myRegisters[i] = new BitString();
@@ -85,7 +85,17 @@ public class Computer {
 		
 		List<String> output = new ArrayList<String>();
 		
+		executeFor: 
 		for (int i = 0; i < myInstMemory.length; i++) {
+			
+			myIR = myInstMemory[myPC];
+			myPC++;
+			
+			if (myInstMemory[i] == null || myInstMemory[i].equals("")) {
+				myIR = "";
+			  	myPC = 0;
+				break;
+			}
 			switch(getOpcode(myInstMemory[i]))
 			{
 			   case "ADD" :
@@ -144,8 +154,10 @@ public class Computer {
 				  executeJr();
 				  break;
 				  
-			   default :    // no opcodes matched!
-			      // Statements
+			   default :    // no opcodes matched! done executing
+				  myIR = "";
+				  myPC = 0;
+			      break executeFor; 
 			}
 		}
 
@@ -170,15 +182,13 @@ public class Computer {
 	 * Given a register mode instruction, returns the register numbers for dr, s1, & s2 in an array.
 	 */
 	private int[] parseRegistersRegMode(String instr) {
-	    String noSpaceString = instr.replaceAll(" ", "");
-	    Scanner s = new Scanner(noSpaceString);
-	    s.useDelimiter("[,$]");
-	    s.next(); // get rid of ADD at start of string
+		String modifiedString = instr.replaceAll("[$,]", " ");
+		Scanner scanner = new Scanner(modifiedString);
+		scanner.next(); // get rid of opcode
 	    int[] regArray = new int[3];
-	    regArray[0] = Integer.parseInt(s.next());
-	    regArray[1] = Integer.parseInt(s.next());
-	    regArray[2] = Integer.parseInt(s.next());
-	    s.close();
+	    regArray[0] = scanner.nextInt();
+	    regArray[1] = scanner.nextInt();
+	    regArray[2] = scanner.nextInt();
 		return regArray;
 	}
 	
@@ -202,7 +212,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <ADD $DR, $S1, $S2>
 	 */
 	public void executeAdd() {
-		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
+		int[] regArray = parseRegistersRegMode(myIR);
 		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
 		myRegisters[regArray[0]].setValue2sComp(sum);
 	}
@@ -212,7 +222,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <ADDU $DR, $S1, $S2>
 	 */
 	public void executeAddu() {
-		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
+		int[] regArray = parseRegistersRegMode(myIR);
 		int sum = myRegisters[regArray[1]].getValue() + myRegisters[regArray[2]].getValue();
 		myRegisters[regArray[0]].setValue(sum);
 	}
@@ -222,7 +232,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <AND $DR, $S1, $S2>
 	 */
 	public void executeAnd() {
-		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
+		int[] regArray = parseRegistersRegMode(myIR);
 		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
 		myRegisters[regArray[0]].setValue2sComp(sum); // modify from ADD to AND
 	}
@@ -232,7 +242,7 @@ public class Computer {
 	 * This is a register mode instruction of the form <OR $DR, $S1, $S2>
 	 */
 	public void executeOr() {
-		int[] regArray = parseRegistersRegMode(myInstMemory[myIR]);
+		int[] regArray = parseRegistersRegMode(myIR);
 		char sr1[] = myRegisters[regArray[1]].getBits();
 		char sr2[] = myRegisters[regArray[2]].getBits();
 		char newOR[] = new char[sr1.length];
@@ -250,7 +260,7 @@ public class Computer {
 	}
 	
 	private void executeOri() {
-		int[] regArray = parseImmedRegMode(myInstMemory[myIR]);
+		int[] regArray = parseImmedRegMode(myIR);
 		
 	}
 	
