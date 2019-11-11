@@ -48,7 +48,7 @@ public class GUI extends JFrame {
         super("Mega Impressive Programming Simulator");
         myComputer = computer;
         myPanel = new JPanel();
-        myRegistersPanel = new RegistersPanel(computer.getRegisters());
+        myRegistersPanel = new RegistersPanel(computer.getRegisters(), computer.getRegisterMappings());
         myInputLabel = new JLabel("Input MIPS code below");
         myOutputLabel = new JLabel("The output appears here");
         myInputTextArea = new JTextArea(5, 20);

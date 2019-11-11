@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 
 /**
  * Computer class comprises of memory, registers, and
@@ -68,7 +69,12 @@ public class Computer {
 			throw new IOException("Too many instructions to fit in instruction memory");
 		}
 		for (int i = 0; i < instructions.size(); i++) {
-			myInstMemory[i] = instructions.get(i);
+			String unparsedInst = instructions.get(i).toLowerCase();
+			for (String s : myRegisterMappings.keySet()) {
+				// dollar signs are viewed as ending a line in regex so must escape this interpretation with \\
+				unparsedInst = unparsedInst.replaceAll("\\" + s, Matcher.quoteReplacement("$" + myRegisterMappings.get(s)));
+			}
+			myInstMemory[i] = unparsedInst.toUpperCase();
 		}
 	}
 	
@@ -189,6 +195,7 @@ public class Computer {
 	    regArray[0] = scanner.nextInt();
 	    regArray[1] = scanner.nextInt();
 	    regArray[2] = scanner.nextInt();
+	    scanner.close();
 		return regArray;
 	}
 	
@@ -196,15 +203,14 @@ public class Computer {
 	 * Given a register mode instruction, returns the register numbers for dr, s1, & constant in an array.
 	 */
 	private int[] parseImmedRegMode(String instr) {
-		String noSpaceString = instr.replaceAll(" ", "");
-	    Scanner s = new Scanner(noSpaceString);
-	    s.useDelimiter("[,$]");
-	    s.next(); // get rid of ADD at start of string
+		String modifiedString = instr.replaceAll("[$,]", " ");
+		Scanner scanner = new Scanner(modifiedString);
+		scanner.next(); // get rid of opcode
 	    int[] regArray = new int[3];
-	    regArray[0] = Integer.parseInt(s.next());
-	    regArray[1] = Integer.parseInt(s.next());
-	    regArray[2] = Integer.parseInt(s.next());
-	    s.close();
+	    regArray[0] = Integer.parseInt(scanner.next());
+	    regArray[1] = Integer.parseInt(scanner.next());
+	    regArray[2] = Integer.parseInt(scanner.next());
+	    scanner.close();
 		return regArray;
 	}
 	/**
@@ -233,8 +239,19 @@ public class Computer {
 	 */
 	public void executeAnd() {
 		int[] regArray = parseRegistersRegMode(myIR);
-		int sum = myRegisters[regArray[1]].getValue2sComp() + myRegisters[regArray[2]].getValue2sComp();
-		myRegisters[regArray[0]].setValue2sComp(sum); // modify from ADD to AND
+		char sr1[] = myRegisters[regArray[1]].getBits();
+		char sr2[] = myRegisters[regArray[2]].getBits();
+		char newOR[] = new char[sr1.length];
+		
+		for (int i = 0; i < sr1.length; i++) {
+			if (sr1[i] == '1' && sr2[i] == '1') {
+				newOR[i] = '1';
+			}
+			else {
+				newOR[i] = '0';
+			}
+		}
+		myRegisters[regArray[0]].setBits(newOR);
 	}
 	
 	/**
@@ -248,19 +265,113 @@ public class Computer {
 		char newOR[] = new char[sr1.length];
 		
 		for (int i = 0; i < sr1.length; i++) {
-			if (sr1[i] == sr2[i]) {
-				newOR[i] = 1;
+			if (sr1[i] == '1' || sr2[i] == '1') {
+				newOR[i] = '1';
 			}
 			else {
-				newOR[i] = 0;
+				newOR[i] = '0';
 			}
 		}
-		
-		myRegisters[regArray[0]].setBits(newOR); // modify from ADD to OR
+		myRegisters[regArray[0]].setBits(newOR);
 	}
 	
+	/**
+	 * Executes the ori operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <ORI $DR, $S1, n>
+	 */
 	private void executeOri() {
 		int[] regArray = parseImmedRegMode(myIR);
+		char sr1[] = myRegisters[regArray[1]].getBits();
+		BitString constant = new BitString();
+		constant.setValue2sComp(regArray[2]);
+		char sr2[] = constant.getBits();
+		
+		char newOR[] = new char[sr1.length];
+		for (int i = 0; i < sr1.length; i++) {
+			if (sr1[i] == '1' || sr2[i] == '1') {
+				newOR[i] = '1';
+			}
+			else {
+				newOR[i] = '0';
+			}
+		}
+		myRegisters[regArray[0]].setBits(newOR);
+		
+	}
+	
+	/**
+	 * Executes the addi operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <ADDI $DR, $S1, n>
+	 */
+	private void executeAddi() {
+		int[] regArray = parseImmedRegMode(myIR);
+		BitString constant = new BitString();
+		constant.setValue2sComp(regArray[2]);
+		
+		int sum = myRegisters[regArray[1]].getValue2sComp() + constant.getValue2sComp();
+		myRegisters[regArray[0]].setValue2sComp(sum);
+	}
+	
+	/**
+	 * Executes the addiu operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <ADDIU $DR, $S1, n>
+	 */
+	private void executeAddiu() {
+		int[] regArray = parseImmedRegMode(myIR);
+		BitString constant = new BitString();
+		constant.setValue(regArray[2]);
+		
+		int sum = myRegisters[regArray[1]].getValue() + constant.getValue();
+		myRegisters[regArray[0]].setValue(sum);
+		
+	}
+	
+	/**
+	 * Executes the andi operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <ANDI $DR, $S1, n>
+	 */
+	private void executeAndi() {
+		int[] regArray = parseImmedRegMode(myIR);
+		char sr1[] = myRegisters[regArray[1]].getBits();
+		BitString constant = new BitString();
+		constant.setValue2sComp(regArray[2]);
+		char sr2[] = constant.getBits();
+		
+		char newAND[] = new char[sr1.length];
+		for (int i = 0; i < sr1.length; i++) {
+			if (sr1[i] == '1' && sr2[i] == '1') {
+				newAND[i] = '1';
+			}
+			else {
+				newAND[i] = '0';
+			}
+		}
+		myRegisters[regArray[0]].setBits(newAND);
+		
+	}
+	
+	private void executeLw() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void executeSw() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void executeBeq() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void executeBne() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void executeJ() {
+		// TODO Auto-generated method stub
 		
 	}
 	
@@ -269,46 +380,7 @@ public class Computer {
 		
 	}
 
-	private void executeJ() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	private void executeBne() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void executeBeq() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void executeSw() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void executeLw() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void executeAndi() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void executeAddiu() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void executeAddi() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	private void createRegisterMappings() { 
 		myRegisterMappings = new HashMap<String, Integer>();
 		myRegisterMappings.put("$zero", 0);
@@ -331,18 +403,22 @@ public class Computer {
 	    myRegisterMappings.put("$s1", 17);
 	    myRegisterMappings.put("$s2", 18);
 	    myRegisterMappings.put("$s3", 19);
-	    myRegisterMappings.put("$t2", 20);
-	    myRegisterMappings.put("$t3", 21);
-	    myRegisterMappings.put("$t4", 22);
-	    myRegisterMappings.put("$t5", 23);
-	    myRegisterMappings.put("$t6", 24);
-	    myRegisterMappings.put("$t7", 25);
+	    myRegisterMappings.put("$s4", 20);
+	    myRegisterMappings.put("$s5", 21);
+	    myRegisterMappings.put("$s6", 22);
+	    myRegisterMappings.put("$s7", 23);
+	    myRegisterMappings.put("$t8", 24);
+	    myRegisterMappings.put("$t9", 25);
 	    myRegisterMappings.put("$k0", 26);
 	    myRegisterMappings.put("$k1", 27);
 	    myRegisterMappings.put("$gp", 28);
 	    myRegisterMappings.put("$sp", 29);
 	    myRegisterMappings.put("$fp", 30);
 	    myRegisterMappings.put("$ra", 31);
+	}
+	
+	public Map<String, Integer> getRegisterMappings() {
+		return myRegisterMappings;
 	}
 	
 	/**
