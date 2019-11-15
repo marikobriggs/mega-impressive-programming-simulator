@@ -24,6 +24,7 @@ public class Computer {
 	private Map<String, Integer> myRegisterMappings;
 	private int myPC;
 	private String myIR;
+	private Map<String, Integer> myLabelMap;
 
 	/**
 	 * Initializes all the memory to 0, registers to 0 to 32,
@@ -32,6 +33,7 @@ public class Computer {
 	 */
 	public Computer() {
 		createRegisterMappings();
+		myLabelMap = new HashMap<String, Integer>();
 		myPC = 0;
 		myIR = "";
 		myRegisters = new BitString[MAX_REGISTERS];
@@ -52,7 +54,7 @@ public class Computer {
 	 * Returns the register file for this Computer
 	 * @return this Computer's register file
 	 */
-	BitString[] getRegisters() {
+	public BitString[] getRegisters() {
 		return myRegisters;
 	}
 	
@@ -65,16 +67,40 @@ public class Computer {
 	 * @throws IOException when instructions don't fit in memory
 	 */
 	public void assemble(List<String> instructions) throws IOException {
+		myLabelMap = new HashMap<String, Integer>(); // forget old label mappings, these are new instructions
 		if (instructions.size() > myInstMemory.length) {
 			throw new IOException("Too many instructions to fit in instruction memory");
 		}
-		for (int i = 0; i < instructions.size(); i++) {
-			String unparsedInst = instructions.get(i).toLowerCase();
-			for (String s : myRegisterMappings.keySet()) {
-				// dollar signs are viewed as ending a line in regex so must escape this interpretation with \\
-				unparsedInst = unparsedInst.replaceAll("\\" + s, Matcher.quoteReplacement("$" + myRegisterMappings.get(s)));
+		
+		int i = 0;
+		for (String inst : instructions) {
+			String unparsedInst = inst.toLowerCase();
+			if ("".equals(unparsedInst)) { // no instruction here
+				continue; // stop looking here, go to next instruction
+			} else if (unparsedInst.contains(":")) { // there's a label
+				String label = unparsedInst.split(":")[0].trim();
+				myLabelMap.put(label, i); // this label points to the instruction about to be processed
+				if (!(unparsedInst.split(":").length == 1)) {
+					unparsedInst = unparsedInst.split(":")[1]; // this is now a normal instruction
+					for (String s : myRegisterMappings.keySet()) {
+						// dollar signs are viewed as ending a line in regex so must escape this interpretation with \\
+						unparsedInst = unparsedInst.replaceAll("\\" + s, Matcher.quoteReplacement("$" + myRegisterMappings.get(s)));
+					}
+					myInstMemory[i] = unparsedInst.toUpperCase();
+					i++; // put next instruction at next instruction address
+				} else {
+					continue; // there was only a label no instruction, go to next instruction
+				}
+
+			} else { // this is just a normal instruction
+				for (String s : myRegisterMappings.keySet()) {
+					// dollar signs are viewed as ending a line in regex so must escape this interpretation with \\
+					unparsedInst = unparsedInst.replaceAll("\\" + s, Matcher.quoteReplacement("$" + myRegisterMappings.get(s)));
+				}
+				myInstMemory[i] = unparsedInst.toUpperCase();
+				i++; // put next instruction at next instruction address
 			}
-			myInstMemory[i] = unparsedInst.toUpperCase();
+
 		}
 	}
 	
