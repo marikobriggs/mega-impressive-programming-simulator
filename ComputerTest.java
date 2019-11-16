@@ -196,7 +196,21 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAddiu() {
-		fail("Not yet implemented");
+		String inst = "ADD $t1, $t2, 6";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+		registers[10].setValue2sComp(5);
+		// put in t2
+		registers[11].setValue2sComp(6);
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+
+		assertEquals(11, registers[9].getValue2sComp());
 	}
 
 	/**
@@ -204,7 +218,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAndi() {
-		fail("Not yet implemented");
+		String inst = "AND $10, $11, 6";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+
+		registers[11].setValue(5);
+		// put in t2
+		registers[12].setValue(6);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		assertEquals(4, registers[10].getValue());
 	}
 
 	/**
@@ -275,7 +304,7 @@ class ComputerTest {
 	 * Test method for {@link Computer#executeJ()}.
 	 */
 	@Test
-	final void testgetOpcode() {
+	final void testGetOpcode() {
 		fail("Not yet implemented");
 	}
 
