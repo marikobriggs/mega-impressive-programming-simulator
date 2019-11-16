@@ -1,5 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +15,16 @@ import org.junit.jupiter.api.Test;
  */
 class ComputerTest {
 
+	static Computer comp;
+	static BitString bits;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
+		comp = new Computer();
+		bits = new BitString();
 	}
 
 	/**
@@ -48,7 +56,21 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAdd() {
-		fail("Not yet implemented");
+		String inst = "ADD $t1, $t2, $t3";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+		registers[10].setValue2sComp(5);
+		// put in t2
+		registers[11].setValue2sComp(6);
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+
+		assertEquals(11, registers[9].getValue2sComp());
 	}
 
 	/**
@@ -56,7 +78,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAddU() {
-		fail("Not yet implemented");
+		String inst = "ADD $t1, $t2, $t3";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+		registers[10].setValue(5);
+		// put in t2
+		registers[11].setValue(6);
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+
+		assertEquals(11, registers[9].getValue());
+
 	}
 
 	/**
