@@ -373,7 +373,6 @@ public class Computer {
 			}
 		}
 		myRegisters[regArray[0]].setBits(newAND);
-		
 	}
 	
 	private void executeLw() {
@@ -386,24 +385,59 @@ public class Computer {
 		
 	}
 	
+	/**
+	 * Executes the beq operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <bne $sr, $sr, label>
+	 */
 	private void executeBeq() {
-		// TODO Auto-generated method stub
-		
+		String modifiedString = myIR.replaceAll("[$,]", " ");
+		Scanner scanner = new Scanner(modifiedString);
+		scanner.next(); // get rid of opcode
+	    int num1 = myRegisters[scanner.nextInt()].getValue2sComp();
+	    int num2 = myRegisters[scanner.nextInt()].getValue2sComp();
+	    String label = scanner.next();
+	    scanner.close();
+	    if (num1 == num2) {
+			myPC = myLabelMap.get(label);
+	    }
 	}
 	
+	/**
+	 * Executes the j operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <J label>
+	 */
 	private void executeBne() {
-		// TODO Auto-generated method stub
+		String modifiedString = myIR.replaceAll("[$,]", " ");
+		Scanner scanner = new Scanner(modifiedString);
+		scanner.next(); // get rid of opcode
+	    int num1 = myRegisters[scanner.nextInt()].getValue2sComp();
+	    int num2 = myRegisters[scanner.nextInt()].getValue2sComp();
+	    String label = scanner.next();
+	    scanner.close();
+	    if (num1 != num2) {
+			myPC = myLabelMap.get(label);
+	    }
 		
 	}
 	
+	/**
+	 * Executes the j operation from the String representation of the instruction in IR. 
+	 * This is an immediate mode instruction of the form <J label>
+	 */
 	private void executeJ() {
-		// TODO Auto-generated method stub
-		
+		String[] instructionAsArray = myIR.split("\\s");
+		String label = instructionAsArray[instructionAsArray.length - 1];
+		myPC = myLabelMap.get(label);
 	}
 	
+	/**
+	 * Executes the jr operation from the String representation of the instruction in IR. 
+	 * This is a register mode instruction of the form <J $SR>, performs PC = R[sr].
+	 */
 	private void executeJr() {
-		// TODO Auto-generated method stub
-		
+		String[] instructionAsArray = myIR.split("\\$");
+		int register = Integer.parseInt(instructionAsArray[instructionAsArray.length - 1]);
+		myPC = myRegisters[register].getValue();
 	}
 
 
