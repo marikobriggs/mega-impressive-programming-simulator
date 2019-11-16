@@ -1,3 +1,4 @@
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
@@ -11,7 +12,8 @@ import org.junit.jupiter.api.Test;
  */
 
 /**
- * Class to test the Computer class's functionality
+ * @author mercedeschea
+ *
  */
 class ComputerTest {
 
@@ -36,10 +38,18 @@ class ComputerTest {
 	}
 
 	/**
-	 * Test method for {@link Computer#compile(java.util.List)}.
+	 * Test method for {@link Computer#getRegisters()}.
 	 */
 	@Test
-	final void testCompile() {
+	final void testGetRegisters() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#assemble(java.util.List)}.
+	 */
+	@Test
+	final void testAssemble() {
 		fail("Not yet implemented");
 	}
 
@@ -48,6 +58,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecute() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#parseRegistersRegMode()}.
+	 */
+	@Test
+	final void testparseRegistersRegMode() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#testparseImmedRegMode()}.
+	 */
+	@Test
+	final void testparseImmedRegMode() {
 		fail("Not yet implemented");
 	}
 
@@ -166,10 +192,90 @@ class ComputerTest {
 	}
 
 	/**
-	 * Test method for {@link Computer#createMap()}.
+	 * Test method for {@link Computer#executeAddiu()}.
 	 */
 	@Test
-	final void testCreateMap() {
+	final void testExecuteAddiu() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeAndi()}.
+	 */
+	@Test
+	final void testExecuteAndi() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeLw()}.
+	 */
+	@Test
+	final void testExecuteLw() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeSw()}.
+	 */
+	@Test
+	final void testExecuteSw() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeBeq()}.
+	 */
+	@Test
+	final void testExecuteBeq() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeBne()}.
+	 */
+	@Test
+	final void testExecuteBne() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeJ()}.
+	 */
+	@Test
+	final void testExecuteJ() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeJr()}.
+	 */
+	@Test
+	final void testExecuteJr() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#createRegisterMappings()}.
+	 */
+	@Test
+	final void testCreateRegisterMappings() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#getRegisterMappings()}.
+	 */
+	@Test
+	final void testGetRegisterMappings() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link Computer#executeJ()}.
+	 */
+	@Test
+	final void testgetOpcode() {
 		fail("Not yet implemented");
 	}
 
