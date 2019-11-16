@@ -261,7 +261,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteLw() {
-		fail("Not yet implemented");
+		String inst = "LW $10,4(6)";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+
+		registers[11].setValue(5);
+		// put in t2
+		registers[12].setValue(6);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		assertEquals(4, registers[10].getValue());
 	}
 
 	/**
