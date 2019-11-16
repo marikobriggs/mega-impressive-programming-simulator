@@ -30,6 +30,7 @@ public class GUI extends JFrame {
 	private JLabel myOutputLabel;
 	private JPanel myPanel;
 	private RegistersPanel myRegistersPanel;
+	private DataMemoryPanel myDataMemoryPanel;
 	private JTextArea myInputTextArea;
 	private JScrollPane myInputScrollPane;
 	private JTextArea myOutputTextArea;
@@ -39,6 +40,7 @@ public class GUI extends JFrame {
     private JPanel myButtonPanel;
     private Computer myComputer;
 	private JScrollPane myRegistersScrollPane;
+	private JScrollPane myDataMemoryScrollPane;
     
     /**
      * Create a new GUI to display running MIPS programs
@@ -49,6 +51,7 @@ public class GUI extends JFrame {
         myComputer = computer;
         myPanel = new JPanel();
         myRegistersPanel = new RegistersPanel(computer.getRegisters(), computer.getRegisterMappings());
+        myDataMemoryPanel = new DataMemoryPanel(computer.getDataMemory());
         myInputLabel = new JLabel("Input MIPS code below");
         myOutputLabel = new JLabel("The output appears here");
         myInputTextArea = new JTextArea(5, 20);
@@ -100,7 +103,9 @@ public class GUI extends JFrame {
         myPanel.add(myButtonPanel);
         
         myRegistersScrollPane = new JScrollPane(myRegistersPanel);
+        myDataMemoryScrollPane = new JScrollPane(myDataMemoryPanel);
         this.add(myRegistersScrollPane, BorderLayout.EAST);
+        this.add(myDataMemoryScrollPane, BorderLayout.CENTER);
         
         this.pack();
         setActionListeners();

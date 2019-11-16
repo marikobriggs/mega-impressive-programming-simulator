@@ -58,6 +58,11 @@ public class Computer {
 		return myRegisters;
 	}
 	
+	public BitString[] getDataMemory() {
+		// TODO Auto-generated method stub
+		return myDataMemory;
+	}
+	
 	/**
 	 * Reads strings from array, checks that they represent valid instructions, and places them in instruction memory.
 	 * 
@@ -375,14 +380,32 @@ public class Computer {
 		myRegisters[regArray[0]].setBits(newAND);
 	}
 	
+	/**
+	 * Executes the lw operation from the String representation of the instruction in IR. 
+	 * This is an instruction of the form <lw $dr, offset($sr)>, executes $dr = dataMem[offset + R[sr]]
+	 */
 	private void executeLw() {
-		// TODO Auto-generated method stub
-		
+		Scanner scanner = new Scanner(myIR.replaceAll("[$,()]", " "));
+		scanner.next(); // get rid of opcode
+		int destReg = scanner.nextInt();
+		int offset = scanner.nextInt();
+		int addrReg = scanner.nextInt();
+		scanner.close();
+		myRegisters[destReg] = myDataMemory[myRegisters[addrReg].getValue() + offset];
 	}
 	
+	/**
+	 * Executes the sw operation from the String representation of the instruction in IR. 
+	 * This is an instruction of the form <sw $sr, offset($dra)>, executes  dataMem[offset + R[dra]] = $sr
+	 */
 	private void executeSw() {
-		// TODO Auto-generated method stub
-		
+		Scanner scanner = new Scanner(myIR.replaceAll("[$,()]", " "));
+		scanner.next(); // get rid of opcode
+		int valueReg = scanner.nextInt();
+		int offset = scanner.nextInt();
+		int addrReg = scanner.nextInt();
+		scanner.close();
+		myDataMemory[myRegisters[addrReg].getValue() + offset] = myRegisters[valueReg];
 	}
 	
 	/**
@@ -509,6 +532,8 @@ public class Computer {
 //			}
 //		}
 //		myRegisters[dr] = setBits(newStr);
+
+
 		
 //		int[] regArray = parseRegistersRegMode(myIR);
 //		
