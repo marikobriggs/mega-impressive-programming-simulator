@@ -81,7 +81,7 @@ public class Computer {
 		if (instructions.size() > myInstMemory.length) {
 			throw new IOException("Too many instructions to fit in instruction memory");
 		}
-		
+
 		int i = 0;
 		for (String inst : instructions) {
 			String unparsedInst = inst.toLowerCase().split("#")[0].trim(); // remove comments
@@ -89,14 +89,14 @@ public class Computer {
 				continue; // stop looking here, go to next instruction
 			} else if (unparsedInst.contains(":")) { // there's a label
 				String label = unparsedInst.split(":")[0].trim();
-				myLabelMap.put(label, i); // this label points to the instruction about to be processed
+				myLabelMap.put(label, i); // this label points to the before the instruction about to be processed (pc +1 will happen)
 				if (!(unparsedInst.split(":").length == 1)) {
 					unparsedInst = unparsedInst.split(":")[1]; // this is now a normal instruction
 					for (String s : myRegisterMappings.keySet()) {
 						// dollar signs are viewed as ending a line in regex so must escape this interpretation with \\
 						unparsedInst = unparsedInst.replaceAll("\\" + s, Matcher.quoteReplacement("$" + myRegisterMappings.get(s)));
 					}
-					myInstMemory[i] = unparsedInst.toUpperCase();
+					myInstMemory[i] = unparsedInst.toLowerCase().trim();
 					i++; // put next instruction at next instruction address
 				} else {
 					continue; // there was only a label no instruction, go to next instruction
@@ -107,11 +107,12 @@ public class Computer {
 					// dollar signs are viewed as ending a line in regex so must escape this interpretation with \\
 					unparsedInst = unparsedInst.replaceAll("\\" + s, Matcher.quoteReplacement("$" + myRegisterMappings.get(s)));
 				}
-				myInstMemory[i] = unparsedInst.toUpperCase();
+				myInstMemory[i] = unparsedInst.toLowerCase();
 				i++; // put next instruction at next instruction address
 			}
 
 		}
+		
 	}
 	
 	/**
@@ -124,8 +125,14 @@ public class Computer {
 	 * @return the output of the execution
 	 */
 	public void execute() {
+		myPC = 0;
+
+
+
+		
 		executeWhile: 
-		while (true) {  
+		while (true) { 
+			
 			myIR = myInstMemory[myPC];
 			myPC++;
 			
@@ -134,7 +141,7 @@ public class Computer {
 			  	myPC = 0;
 				break;
 			}
-			switch(myIR.split("\\s")[0]) { // get opcode
+			switch(myIR.split("\\s")[0].toUpperCase()) { // get opcode
 			   case "ADD" :
 			      executeAdd();
 			      break; 
@@ -323,7 +330,8 @@ public class Computer {
 		int[] regArray = parseImmedRegMode(myIR);
 		BitString constant = new BitString();
 		constant.setValue2sComp(regArray[2]);
-		
+		for (int n : regArray) {
+		}
 		int sum = myRegisters[regArray[1]].getValue2sComp() + constant.getValue2sComp();
 		myRegisters[regArray[0]].setValue2sComp(sum);
 	}
@@ -406,7 +414,7 @@ public class Computer {
 	    String label = scanner.next();
 	    scanner.close();
 	    if (num1 == num2) {
-			myPC = myLabelMap.get(label);
+			myPC = myLabelMap.get(label).intValue();
 	    }
 	}
 	

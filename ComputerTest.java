@@ -120,13 +120,12 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAddU() {
-		String inst = "ADD $t1, $t2, $t3";
+		String inst = "ADDU $t1, $t2, $t3";
 		ArrayList<String> instArr = new ArrayList<String>();
 		instArr.add(inst);
 		BitString[] registers = comp.getRegisters();
 		registers[10].setValue(5);
-		// put in t2
-		registers[11].setValue(6);
+		registers[11].setValue(56);
 		try {
 			comp.assemble(instArr);
 		} catch (IOException e) {
@@ -134,8 +133,8 @@ class ComputerTest {
 		}
 		comp.execute();
 
-		assertEquals(11, registers[9].getValue());
-
+		assertEquals(61, registers[9].getValue()); 
+		
 	}
 
 	/**
@@ -286,6 +285,7 @@ class ComputerTest {
 		 }
 		 comp.execute();
 		 assertEquals(1, registers[10].getValue());
+
 	}
 
 	/**
@@ -294,7 +294,7 @@ class ComputerTest {
 	@Test
 	final void testExecuteBne() {
 		 ArrayList<String> instArr = new ArrayList<String>();
-		 instArr.add("BEQ $10, $11, LABEL");
+		 instArr.add("BNE $10, $11, LABEL");
 		 instArr.add("ADDI $10, $11, 10");
 		 instArr.add("LABEL: ADDI $10, $11, 1");
 		 BitString[] registers = comp.getRegisters();
@@ -307,7 +307,7 @@ class ComputerTest {
 		 fail("Received unexpected IOException");
 		 }
 		 comp.execute();
-		 assertEquals(10, registers[10].getValue());
+		 assertEquals(2, registers[10].getValue());
 	}
 
 	/**
