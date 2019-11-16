@@ -72,6 +72,11 @@ public class Computer {
 	 * @throws IOException when instructions don't fit in memory
 	 */
 	public void assemble(List<String> instructions) throws IOException {
+		
+		for (int i = 0; i < myInstMemory.length; i++) {
+			myInstMemory[i] = "";
+		}
+		
 		myLabelMap = new HashMap<String, Integer>(); // forget old label mappings, these are new instructions
 		if (instructions.size() > myInstMemory.length) {
 			throw new IOException("Too many instructions to fit in instruction memory");
@@ -118,23 +123,18 @@ public class Computer {
 	 * e.g. "ADDI $1, $15, -5"
 	 * @return the output of the execution
 	 */
-	public List<String> execute() {
-		
-		List<String> output = new ArrayList<String>();
-		
-		executeFor: 
-		for (int i = 0; i < myInstMemory.length; i++) {
-			
+	public void execute() {
+		executeWhile: 
+		while (true) {  
 			myIR = myInstMemory[myPC];
 			myPC++;
 			
-			if (myInstMemory[i] == null || myInstMemory[i].equals("")) {
+			if (myIR == null || myIR.equals("")) {
 				myIR = "";
 			  	myPC = 0;
 				break;
 			}
-			switch(myInstMemory[i].split("\\s")[0]) // get opcode
-			{
+			switch(myIR.split("\\s")[0]) { // get opcode
 			   case "ADD" :
 			      executeAdd();
 			      break; 
@@ -194,24 +194,10 @@ public class Computer {
 			   default :    // no opcodes matched! done executing
 				  myIR = "";
 				  myPC = 0;
-			      break executeFor; 
+			      break executeWhile; 
 			}
 		}
-
-		
-		
-		return output;
-//		String input = "ADD $t1, $t2, $t3";
-//		Scanner scan = new Scanner(input.replace(",", ""));
-//		String instr = scan.next();
-//		String destR = scan.next();
-//		String shiftAmt = scan.next();
-//		String funcCode = scan.next(); 
-//		scan.close();
-//		System.out.println("Instruction: " + instr);
-//		System.out.println("Dest reg: " +  destR);
-//		System.out.println("Shift amt: " + shiftAmt);
-//		System.out.println("Func code: " + funcCode);
+		myPC = 0;
 	}
 	
 
@@ -327,7 +313,6 @@ public class Computer {
 			}
 		}
 		myRegisters[regArray[0]].setBits(newOR);
-		
 	}
 	
 	/**
@@ -503,134 +488,4 @@ public class Computer {
 	public Map<String, Integer> getRegisterMappings() {
 		return myRegisterMappings;
 	}
-	
-
-//		regArray[1].
-//		
-//		char str1arr[] = bitstr1.toCharArray();
-//		BitString bitstr = new BitString();
-//		bitstr.setValue2sComp(immed);
-//		char str2arr[] = bitstr.getBits();
-//		char newStr[] = new char[bitstr1.length()];
-//		for (int i = 0; i < bitstr1.length(); i++) {
-//			if (str1arr[i] == str2arr[i]) {
-//				newStr[i] = 1;
-//			}
-//			else {
-//				newStr[i] = 0;
-//			}
-//		}
-//		myRegisters[dr] = setBits(newStr);
-
-
-		
-//		int[] regArray = parseRegistersRegMode(myIR);
-//		
-//		char sr1[] = myRegisters[regArray[1]].getBits();
-//		char sr2[] = myRegisters[regArray[2]].getBits();
-//		char newOR[] = new char[sr1.length];
-//		
-//		for (int i = 0; i < sr1.length; i++) {
-//			if (sr1[i] == sr2[i]) {
-//				newOR[i] = 1;
-//			}
-//			else {
-//				newOR[i] = 0;
-//			}
-//		}
-//		
-//		myRegisters[regArray[0]].setBits(newOR);
-		
-//	/**
-//	 * Loads a 16 bit word into memory at the given address. 
-//	 * @param address memory address
-//	 * @param word data or instruction or address to be loaded into memory
-//	 */
-//	public void loadWord(int address, BitString word) {
-//		if (address < 0 || address >= MAX_DATA_MEMORY) {
-//			throw new IllegalArgumentException("Invalid address");
-//		}
-//		myDataMemory[address] = word;
-//	}
-//
-//	// TODO - Set CC (remove this after implementing)
-//	/**
-//	 * Performs not operation by using the data from the register based on bits[7:9] 
-//	 * and inverting and storing in the register based on bits[4:6]
-//	 */
-//	public void executeNot() {
-//		BitString destBS = myIR.substring(4, 3);
-//		BitString sourceBS = myIR.substring(7, 3);
-//		myRegisters[destBS.getValue()] = myRegisters[sourceBS.getValue()].copy();
-//		myRegisters[destBS.getValue()].invert();
-//	}
-
-//	/**
-//	 * This method will execute all the instructions starting at address 0 
-//	 * till HALT instruction is encountered. 
-//	 */
-//	public void execute() {
-//		BitString opCodeStr;
-//		int opCode;
-//
-//		while (true) {
-//			// Fetch the instruction
-//			myIR = myInstMemory[myPC.getValue()];
-//			myPC.addOne();
-//
-//			// Decode the instruction's first 4 bits 
-//			// to figure out the opcode
-//			opCodeStr = myIR.substring(0, 4);
-//			opCode = opCodeStr.getValue();
-//
-//			// What instruction is this?
-//			if (opCode == 9) { // NOT
-//				executeNot();
-//				return;
-//			}
-//			// TODO - Others
-//		}
-//	}
-
-//	/**
-//	 * Displays the computer's state
-//	 */
-//	public void display() {
-//		System.out.print("\nPC ");
-//		myPC.display(true);
-//		System.out.print("   ");
-//
-//		System.out.print("IR ");
-//		myPC.display(true);
-//		System.out.print("   ");
-//
-//		System.out.print("CC ");
-//		myCC.display(true);
-//		System.out.println("   ");
-//
-//		for (int i = 0; i < MAX_REGISTERS; i++) {
-//			System.out.printf("R%d ", i);
-//			myRegisters[i].display(true);
-//			if (i % 3 == 2) {
-//				System.out.println();
-//			} else {
-//				System.out.print("   ");
-//			}
-//		}
-//		System.out.println();
-//
-//		for (int i = 0; i < MAX_MEMORY; i++) {
-//			System.out.printf("%3d ", i);
-//			myMemory[i].display(true);
-//			if (i % 3 == 2) {
-//				System.out.println();
-//			} else {
-//				System.out.print("   ");
-//			}
-//		}
-//		System.out.println();
-//
-//	}
-	
-
 }
