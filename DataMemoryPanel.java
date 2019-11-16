@@ -1,7 +1,4 @@
 import java.awt.BorderLayout;
-import java.awt.Font;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -14,35 +11,51 @@ import javax.swing.border.EmptyBorder;
  */
 public class DataMemoryPanel extends JPanel{
 
-	JLabel titleLabel;
-	JTextField[] myMemoryCells;
+	private JLabel titleLabel;
+	private JTextField[] myMemoryTexts;
+	private BitString[] myMemory;
 	
 	/**
 	 * auto-generated serial version UID
 	 */
-	private static final long serialVersionUID = -6467125365746605181L;
+	private static final long serialVersionUID = -2921150969388895792L;
 
 	/**
 	 * Create a panel to show a visualization of the current register contents
 	 */
 	DataMemoryPanel(BitString[] memory) {
 		super();
+		myMemory = memory;
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		myMemoryCells = new JTextField[32];
-		titleLabel = new JLabel("MEMORY");
+        myMemoryTexts = new JTextField[128];
+		titleLabel = new JLabel("DATA MEMORY");
 		this.add(titleLabel);
 		this.add(new JLabel("   ")); // padding
-		
-		for (int i = 0; i < 32; i++) {
-			myMemoryCells[i] = new JTextField("asdf");
-			this.add(myMemoryCells[i]);
+		for (int i = 0; i < 128; i++) {
+			JPanel tempPanel = new JPanel();
+			tempPanel.add(new JLabel(i + ""));
+			myMemoryTexts[i] = new JTextField(memory[i].display(true));
+			myMemoryTexts[i].addActionListener(theEvent -> {
+				for (int j = 0; j < myMemoryTexts.length; j++) {
+					if (myMemoryTexts[j] == (JTextField) (theEvent.getSource())) {
+						BitString bitString = new BitString();
+						bitString.setValue2sComp(Integer.parseInt(myMemoryTexts[j].getText()));
+						bitString.setValue2sComp(Integer.parseInt(myMemoryTexts[j].getText()));
+						myMemory[j] = bitString;
+						myMemoryTexts[j].setText(myMemory[j].display(true));
+					}
+				}
+
+			});
+			tempPanel.add(myMemoryTexts[i], BorderLayout.EAST);
+			this.add(tempPanel);
 		}
 		this.setBorder(new EmptyBorder(15, 15, 15, 15));
 	}
 	
-	public void updateMemory(BitString[] memory) {
-		for (int i = 0; i < memory.length; i++) {
-			myMemoryCells[i].setText(memory[i].display(true));
+	public void updateMemory() {
+		for (int i = 0; i < myMemory.length; i++) {
+			myMemoryTexts[i].setText(myMemory[i].display(true));
 		}
 	}
 	

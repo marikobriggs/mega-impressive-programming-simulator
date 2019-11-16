@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -13,8 +14,9 @@ import javax.swing.border.EmptyBorder;
  */
 public class RegistersPanel extends JPanel{
 
-	JLabel titleLabel;
-	JLabel[] myRegisterLabels;
+	private JLabel titleLabel;
+	private JTextField[] myRegisterFields;
+	private BitString[] myRegisters;
 	
 	/**
 	 * auto-generated serial version UID
@@ -26,6 +28,7 @@ public class RegistersPanel extends JPanel{
 	 */
 	RegistersPanel(BitString[] registers, Map<String, Integer> registerMappings) {
 		super();
+		myRegisters = registers;
 		// reverse the register mappings for displaying register titles
 		Map<Integer, String> intToStringRegisterMap = new HashMap<Integer, String>();
 		for (Map.Entry<String, Integer> e : registerMappings.entrySet()) {
@@ -33,15 +36,14 @@ public class RegistersPanel extends JPanel{
 		}
 		
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		myRegisterLabels = new JLabel[32];
+		myRegisterFields = new JTextField[32];
 		titleLabel = new JLabel("REGISTERS");
 		this.add(titleLabel);
 		this.add(new JLabel("   ")); // padding
 		
 		for (int i = 0; i < 32; i++) {
-			
-			myRegisterLabels[i] = new JLabel(registers[i].display(true));
 			JPanel tempPanel = new JPanel();
+			myRegisterFields[i] = new JTextField(registers[i].display(true));
 			if (i == 0) {
 				JLabel label = new JLabel("0 ($zero): "); 
 				label.setFont(new Font( "Monospaced", Font.PLAIN, 12 ));
@@ -59,15 +61,29 @@ public class RegistersPanel extends JPanel{
 			}
 
 
-			tempPanel.add(myRegisterLabels[i], BorderLayout.EAST);
+			tempPanel.add(myRegisterFields[i], BorderLayout.EAST);
 			this.add(tempPanel);
+			
+			myRegisterFields[i].addActionListener(theEvent -> {
+				for (int j = 0; j < myRegisterFields.length; j++) {
+					if (myRegisterFields[j] == (JTextField) (theEvent.getSource())) {
+						BitString bitString = new BitString();
+						bitString.setValue2sComp(Integer.parseInt(myRegisterFields[j].getText()));
+						bitString.setValue2sComp(Integer.parseInt(myRegisterFields[j].getText()));
+						myRegisters[j] = bitString;
+						myRegisterFields[j].setText(myRegisters[j].display(true));
+					}
+				}
+
+			});
 		}
+		
 		this.setBorder(new EmptyBorder(15, 15, 15, 15));
 	}
 	
 	public void updateRegisters(BitString[] registers) {
 		for (int i = 0; i < registers.length; i++) {
-			myRegisterLabels[i].setText(registers[i].display(true));
+			myRegisterFields[i].setText(registers[i].display(true));
 		}
 	}
 	

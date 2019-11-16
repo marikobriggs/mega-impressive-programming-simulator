@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 public class Computer {
 
 	private final static int MAX_INST_MEMORY = 50;
-	private final static int MAX_DATA_MEMORY = 50;
+	private final static int MAX_DATA_MEMORY = 128;
 	private final static int MAX_REGISTERS = 32;
 
 	private BitString myRegisters[];
@@ -79,7 +79,7 @@ public class Computer {
 		
 		int i = 0;
 		for (String inst : instructions) {
-			String unparsedInst = inst.toLowerCase();
+			String unparsedInst = inst.toLowerCase().split("#")[0].trim(); // remove comments
 			if ("".equals(unparsedInst)) { // no instruction here
 				continue; // stop looking here, go to next instruction
 			} else if (unparsedInst.contains(":")) { // there's a label
@@ -133,7 +133,7 @@ public class Computer {
 			  	myPC = 0;
 				break;
 			}
-			switch(getOpcode(myInstMemory[i]))
+			switch(myInstMemory[i].split("\\s")[0]) // get opcode
 			{
 			   case "ADD" :
 			      executeAdd();
@@ -504,18 +504,7 @@ public class Computer {
 		return myRegisterMappings;
 	}
 	
-	/**
-	 * Given an instruction String, returns the String containing just the opcode (name of instruction)
-	 * @param string full, original instruction
-	 * @return opcode name of instruction
-	 */
-	private String getOpcode(String instr) {
-		Scanner s = new Scanner(instr);
-		s.useDelimiter(" ");
-		String opcode = s.next();
-		s.close();
-		return opcode;
-	}
+
 //		regArray[1].
 //		
 //		char str1arr[] = bitstr1.toCharArray();
