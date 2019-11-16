@@ -101,7 +101,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAnd() {
-		fail("Not yet implemented");
+		String inst = "AND $10, $11, $12";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+
+		registers[11].setValue(5);
+		// put in t2
+		registers[12].setValue(6);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		assertEquals(4, registers[10].getValue());
 	}
 
 	/**
@@ -109,7 +124,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteOr() {
-		fail("Not yet implemented");
+		String inst = "OR $10, $11, $12";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+
+		registers[11].setValue(5);
+		// put in t2
+		registers[12].setValue(6);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		assertEquals(7, registers[10].getValue());
 	}
 
 	/**
@@ -117,7 +147,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteORI() {
-		fail("Not yet implemented");
+		String inst = "ORI $10, $11, 5";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+
+		registers[11].setValue2sComp(3);
+		// put in t2
+		registers[12].setValue2sComp(5);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		assertEquals(7, registers[10].getValue2sComp());
 	}
 
 	/**
