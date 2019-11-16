@@ -3,6 +3,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -65,15 +67,32 @@ class ComputerTest {
 	 * Test method for {@link Computer#parseRegistersRegMode()}.
 	 */
 	@Test
-	final void testparseRegistersRegMode() {
-		fail("Not yet implemented");
+	final void testParseRegistersRegMode() {
+		// String inst = "ADD $t1, $t2, $t3";
+		// ArrayList<String> instArr = new ArrayList<String>();
+		// instArr.add(inst.replaceAll("[$,]", " "));
+
+		// try {
+		// comp.assemble(instArr);
+		// } catch (IOException e) {
+		// fail("Received unexpected IOException");
+		// }
+		// comp.execute();
+
+		// int[] regModeArr = new int[3];
+		// for (int i = 0; i < inst.length(); i++) {
+		// regModeArr[i] = Integer.parseInt(instArr.get(i));
+		// }
+
+		// assertArrayEquals(new int[] { 9, 10, 11 }, regModeArr);
+
 	}
 
 	/**
 	 * Test method for {@link Computer#testparseImmedRegMode()}.
 	 */
 	@Test
-	final void testparseImmedRegMode() {
+	final void testParseImmedRegMode() {
 		fail("Not yet implemented");
 	}
 
@@ -86,6 +105,7 @@ class ComputerTest {
 		ArrayList<String> instArr = new ArrayList<String>();
 		instArr.add(inst);
 		BitString[] registers = comp.getRegisters();
+		// put in t1
 		registers[10].setValue2sComp(5);
 		// put in t2
 		registers[11].setValue2sComp(6);
@@ -257,7 +277,24 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteBeq() {
-		fail("Not yet implemented");
+		// ArrayList<String> instArr = new ArrayList<String>();
+		// instArr.add("BEQ $10, $11, LABEL");
+		// instArr.add("ADDI $10, $11, 10");
+		// instArr.add("LABEL: ADDI $10, $11, 1");
+		// BitString[] registers = comp.getRegisters();
+
+		// // set equal
+		// registers[10].setValue(0);
+		// registers[11].setValue(0);
+
+		// try {
+		// comp.assemble(instArr);
+		// } catch (IOException e) {
+		// fail("Received unexpected IOException");
+		// }
+		// comp.execute();
+
+		// assertEquals(1, registers[10].getValue());
 	}
 
 	/**
@@ -265,7 +302,24 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteBne() {
-		fail("Not yet implemented");
+		// ArrayList<String> instArr = new ArrayList<String>();
+		// instArr.add("BEQ $10, $11, LABEL");
+		// instArr.add("ADDI $10, $11, 10");
+		// instArr.add("LABEL: ADDI $10, $11, 1");
+		// BitString[] registers = comp.getRegisters();
+
+		// // set equal
+		// registers[10].setValue(0);
+		// registers[11].setValue(1);
+
+		// try {
+		// comp.assemble(instArr);
+		// } catch (IOException e) {
+		// fail("Received unexpected IOException");
+		// }
+		// comp.execute();
+
+		// assertEquals(10, registers[10].getValue());
 	}
 
 	/**
@@ -273,7 +327,22 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteJ() {
-		fail("Not yet implemented");
+		// ArrayList<String> instArr = new ArrayList<String>();
+		// instArr.add("J LABEL");
+		// instArr.add("ADDI $10, $11, 10");
+		// instArr.add("LABEL: ADDI $10, $11, 1");
+		// BitString[] registers = comp.getRegisters();
+		// // t1
+		// registers[10].setValue(0);
+		// registers[11].setValue(0);
+
+		// try {
+		// comp.assemble(instArr);
+		// } catch (IOException e) {
+		// fail("Received unexpected IOException");
+		// }
+		// comp.execute();
+		// assertEquals(1, registers[10].getValue());
 	}
 
 	/**
@@ -281,7 +350,20 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteJr() {
-		fail("Not yet implemented");
+		String inst = "JR $T1";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+		// t1
+		registers[9].setValue(12);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		assertEquals(12, registers[9].getValue());
 	}
 
 	/**
@@ -289,7 +371,9 @@ class ComputerTest {
 	 */
 	@Test
 	final void testCreateRegisterMappings() {
-		fail("Not yet implemented");
+		assertEquals(2, comp.getRegisterMappings().get("$v0"));
+		assertEquals(12, comp.getRegisterMappings().get("$t4"));
+		assertEquals(26, comp.getRegisterMappings().get("$k0"));
 	}
 
 	/**
@@ -297,15 +381,9 @@ class ComputerTest {
 	 */
 	@Test
 	final void testGetRegisterMappings() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link Computer#executeJ()}.
-	 */
-	@Test
-	final void testGetOpcode() {
-		fail("Not yet implemented");
+		assertEquals(2, comp.getRegisterMappings().get("$v0"));
+		assertEquals(12, comp.getRegisterMappings().get("$t4"));
+		assertEquals(26, comp.getRegisterMappings().get("$k0"));
 	}
 
 }
