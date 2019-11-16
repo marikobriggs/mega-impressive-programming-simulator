@@ -1,2 +1,5 @@
 /BitStringTest.class
 *.class
+.vscode
+.project
+.classpath
