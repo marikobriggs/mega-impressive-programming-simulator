@@ -2,11 +2,25 @@
 
 This project is a MIPS simulator created in Java with a GUI created in Java Swing. The GUI allows users to enter their MIPS code in a text area as well as allowing registers and memory to be viewed and modified. 
 
+
+  - [Project Decisions and Considerations](#project-decisions-and-considerations)
+  - [How to Run the Program](#how-to-run-the-program)
+    - [How to Enter Values into Register/Memory](#how-to-enter-values-into-registermemory)
+    - [How to Format Instructions](#how-to-format-instructions)
+  - [Not Handled by Our Simulator](#not-handled-by-our-simulator)
+    - [](#)
+    - [Incorrect Code](#incorrect-code)
+  - [Tests](#tests)
+  - [UML Diagram](#uml-diagram)
+  - [Built With](#built-with)
+  - [Authors](#authors)
+
 ## Project Decisions and Considerations 
 
 * Our program works with assembly level langauge 
 * Spaces and commas are ignored
 * Input is taken through the GUI and stored in instruction memory 
+  * Instruction memory is 50 
 * Memory exists in the form of data memory/instruction memory 
   * Data memory is visualized by the GUI
 * 32 registers that are visualized by the GUI 
@@ -35,9 +49,17 @@ Multiple instruction formats are valid and will run within the Mega Impressive P
 * Both commas and spaces are handled 
 * ``.data`` and ``.text`` are **not** handled 
 
-### Error Handling 
+## Not Handled by Our Simulator
+### Incorrect Code 
 * The Mega Impressive Programming Simulator is not equipped to deal with bad code -- behavior under these conditions is unpredictable. Hopefully your code works! 
 
+An example of some code that won't work: 
+```
+ADDI $t1, $t2, $t3
+```
+```
+LW $t1, $t2, $t3 
+```
 
 ## Tests
 
