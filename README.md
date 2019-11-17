@@ -123,6 +123,37 @@ aLabel:
 ```
 which outputs a result of ``-81``. 
 
+The pièce de résistance: Fibonacci! 
+
+```
+        addi $a0, $zero, 9
+
+fib:    bne $a0, $zero, elseif # if (n == 0)
+        add $v0, $zero, $zero # ret value is 0
+        j exit # return!
+elseif: addi $t0, $zero, 1 # will use 1 for comparison
+        bne $a0, $t0, else # else if (n == 1)
+        addi $v0, $zero, 1 # ret value is 1
+        j exit # return!
+else:   add $t1, $zero, $zero # t1 = first = 0
+        addi $t2, $zero, 1 # t2 = second = 1
+        add $t3, $zero, $zero # t3 = sum = 0
+        addi $t4, $zero, 1 # t4 = i = 1
+loop:   beq $t4, $a0, postl # t5 has result of i < n
+        # done looping!
+        #body
+        add $t3, $t3, $t1 # sum = sum + first
+        add $t6, $t1, $t2 # third = first + second
+        add $t1, $t2, $zero # first = second
+        add $t2, $t6, $zero # second = third
+        addi $t4, $t4, 1 # i++
+        j loop
+postl:  add $v0, $t3, 1 # ret value is sum
+exit:
+```
+
+This results in ``34`` in ``$v0``. 
+
 ## Tests
 
 JUnit tests were created for the Computer class and can be found under ``ComputerTest.java``. 
