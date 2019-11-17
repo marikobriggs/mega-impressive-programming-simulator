@@ -8,7 +8,6 @@ This project is a MIPS simulator created in Java with a GUI created in Java Swin
     - [How to Enter Values into Register/Memory](#how-to-enter-values-into-registermemory)
     - [How to Format Instructions](#how-to-format-instructions)
   - [Not Handled by Our Simulator](#not-handled-by-our-simulator)
-    - [](#)
     - [Incorrect Code](#incorrect-code)
   - [Tests](#tests)
   - [UML Diagram](#uml-diagram)
@@ -28,6 +27,8 @@ This project is a MIPS simulator created in Java with a GUI created in Java Swin
 
 
 ## How to Run the Program 
+*The main method is in the GUI.* 
+
 Once you have downloaded the component files and started up the GUI, 
 1. Enter MIPS code into the main text box. Formatting is flexible and is described in more detail [below.](###How-to-format-instructions)
 2. Enter values into register/memory text boxes as desired. Further instruction on how to do this [follows.](###How-to-Enter-Values-into-Register/Memory)
