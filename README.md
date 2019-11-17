@@ -67,7 +67,7 @@ addi $t1, $t2, $t3
  $t1, $t2, $t3 
 ```
 ### Zero 
-The ``$zero`` register is not accomodated in our simulator. 
+The ``$zero`` register is 0 and will remain 0 until changed; however,  **it can be changed** and is not hardcoded to be 0. 
 
 ## Examples of Working Code 
 The following code shows what kinds of instructions and formats are taken by our simulator. 
@@ -85,8 +85,9 @@ sw $s2, 1($t4)
 lw $s0, 2($t2)
 ```
 
-
 Essentially, we divide by four. 
+
+Other examples: 
 
 
 ## Tests
