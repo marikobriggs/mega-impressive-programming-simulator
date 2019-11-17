@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,9 +126,6 @@ public class Computer {
 	public void execute() {
 		myPC = 0;
 
-
-
-		
 		executeWhile: 
 		while (true) { 
 			
@@ -330,8 +326,6 @@ public class Computer {
 		int[] regArray = parseImmedRegMode(myIR);
 		BitString constant = new BitString();
 		constant.setValue2sComp(regArray[2]);
-		for (int n : regArray) {
-		}
 		int sum = myRegisters[regArray[1]].getValue2sComp() + constant.getValue2sComp();
 		myRegisters[regArray[0]].setValue2sComp(sum);
 	}

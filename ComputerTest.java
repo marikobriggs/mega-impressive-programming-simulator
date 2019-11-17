@@ -3,8 +3,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -253,8 +251,31 @@ class ComputerTest {
 	 * Test method for {@link Computer#executeLw()}.
 	 */
 	@Test
-	final void testExecuteLw() {
-		fail("Not yet implemented");
+	final void testExecuteLw() { // will test lw by loading from address 25 into $t1
+		
+		// set R[9] = 0, R[10] = 18
+		BitString[] registers = comp.getRegisters();
+		registers[9].setValue2sComp(0); // set $t1 to 0
+		registers[10].setValue2sComp(18); // set $t2 to 18
+		
+		// set M[25] = 81
+		BitString[] memory = comp.getDataMemory();
+		BitString eightyOneBitString = new BitString(); // data to be loaded
+		eightyOneBitString.setValue2sComp(81);
+		memory[25] = eightyOneBitString;
+		
+		String lwInst = "LW $t1, 7($t2)"; // lw with address in t2 offset by 7
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(lwInst);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+
+		assertEquals(81, registers[9].getValue()); // make sure t1 got the loaded value (81)
 	}
 
 	/**
