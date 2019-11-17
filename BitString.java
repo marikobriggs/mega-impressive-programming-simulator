@@ -1,3 +1,13 @@
+/*
+ * Mega Impressive Programming Simulator
+ * TCSS 372 - Computer Architecture
+ * 11-16-2019
+ * By:
+ * Mariko Briggs
+ * Mercedes Chea
+ * Thaddaeus Hug
+ */
+
 import java.util.Arrays;
 
 /**

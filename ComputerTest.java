@@ -1,9 +1,22 @@
+/*
+ * Mega Impressive Programming Simulator
+ * TCSS 372 - Computer Architecture
+ * 11-16-2019
+ * By:
+ * Mariko Briggs
+ * Mercedes Chea
+ * Thaddaeus Hug
+ */
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +42,33 @@ class ComputerTest {
 	 * Test method for {@link Computer#Computer()}.
 	 */
 	@Test
-	final void testComputer() {
-		fail("Not yet implemented");
+	final void testComputer() { // (-81 | 5  ), and test not branching
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add("ADDI $t5, $zero, 5");
+		instArr.add("ADDI $t4, $zero, 5");
+		instArr.add("BNE $t4, $t5, aLabel:"); // won't branch
+		
+		instArr.add("ADDI $t5, $zero, 6");
+		instArr.add("ADDI $t4, $zero, 11");
+		instArr.add("BEQ $t4, $t5, aLabel:"); // won't branch
+		
+		instArr.add("ADDI $t1, $zero, -81");
+		instArr.add("");
+		instArr.add("");
+		instArr.add(""); // simulate empty lines
+		instArr.add("ADDI $t2, $zero, 5");
+		instArr.add("OR $t0, $t1, $t2");
+		instArr.add("aLabel:");
+		
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+		
+		BitString[] registers = comp.getRegisters();
+		assertEquals(-81 | 5, registers[8].getValue2sComp());
 	}
 
 	/**
@@ -57,36 +95,57 @@ class ComputerTest {
 	 */
 	@Test
 	final void testAssemble() {
-		fail("Not yet implemented");
+		Assertions.assertThrows(IOException.class, () -> {
+			List<String> instArray = new ArrayList<String>();
+			for (int i = 0; i < 100; i++) {
+				instArray.add(""); // simulate 100 instructions
+			}
+			comp.assemble(instArray);
+			comp.execute();
+		});
 	}
 
 	/**
 	 * Test method for {@link Computer#execute()}.
 	 */
 	@Test
-	final void testExecute() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link Computer#parseRegistersRegMode()}.
-	 */
-	@Test
-	final void testParseRegistersRegMode() { // THIS NEED TO CHANGE!!!! ASDLFKJASDLKFAJSDFKAL**************
-		String inst = "ADD $t1, $t2, $t3";
+	final void testExecute() { // perform (5 + 3) & (81 | 6)
 		ArrayList<String> instArr = new ArrayList<String>();
-		instArr.add(inst.replaceAll("[$,]", " "));
+		instArr.add("ADDI $t0, $zero, 5");
+		instArr.add("ADDI $t1, $zero, 3");
+		instArr.add("ADD $t3, $t0, $t1");
+		
+		instArr.add("ADDI $t4, $zero, 81");
+		instArr.add("ADDI $t5, $zero, 6");
+		instArr.add("OR $t6, $t4, $t5");
+		
+		instArr.add("AND $s0, $t3, $t6");
+		
 		try {
 			comp.assemble(instArr);
 		} catch (IOException e) {
 			fail("Received unexpected IOException");
 		}
 		comp.execute();
-		int[] regModeArr = new int[3];
-		for (int i = 0; i < inst.length(); i++) {
-			regModeArr[i] = Integer.parseInt(instArr.get(i));
-		}
-		assertArrayEquals(new int[] { 9, 10, 11 }, regModeArr);
+		
+		BitString[] registers = comp.getRegisters();
+		assertEquals((5 + 3) & (81 | 6), registers[16].getValue2sComp());
+	}
+
+	/**
+	 * Test method for {@link Computer#parseRegistersRegMode()}.
+	 */
+	@Test
+	final void testParseRegistersRegMode() { 
+			try {
+				Method parseRegistersRegMode = Computer.class.getDeclaredMethod("parseRegistersRegMode",  String.class);
+				parseRegistersRegMode.setAccessible(true);
+				int[] regArray;
+				regArray = (int[]) parseRegistersRegMode.invoke(comp, "ADD $9, $10, $11");
+				assertArrayEquals(new int[] {9, 10, 11}, regArray);
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				fail("didn't successfully operate the parseRegistersRegMode method");
+			}
 	}
 
 	/**
@@ -94,7 +153,15 @@ class ComputerTest {
 	 */
 	@Test
 	final void testParseImmedRegMode() {
-		fail("Not yet implemented");
+		try {
+			Method parseImmedRegMode = Computer.class.getDeclaredMethod("parseImmedRegMode",  String.class);
+			parseImmedRegMode.setAccessible(true);
+			int[] regArray;
+			regArray = (int[]) parseImmedRegMode.invoke(comp, "ADD $9, $10, -81");
+			assertArrayEquals(new int[] {9, 10, -81}, regArray);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			fail("didn't successfully operate the parseRegistersRegMode method");
+		}
 	}
 
 	/**
@@ -214,7 +281,7 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAddiu() {
-		String inst = "ADD $t1, $t2, 6";
+		String inst = "ADDIU $t1, $t2, 6";
 		ArrayList<String> instArr = new ArrayList<String>();
 		instArr.add(inst);
 		BitString[] registers = comp.getRegisters();
@@ -236,7 +303,7 @@ class ComputerTest {
 	 */
 	@Test
 	final void testExecuteAndi() {
-		String inst = "AND $10, $11, 6";
+		String inst = "ANDI $10, $11, 6";
 		ArrayList<String> instArr = new ArrayList<String>();
 		instArr.add(inst);
 		BitString[] registers = comp.getRegisters();
