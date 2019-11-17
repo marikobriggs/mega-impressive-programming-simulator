@@ -22,28 +22,29 @@ import javax.swing.border.EmptyBorder;
  * GUI to display running MIPS programs
  */
 public class GUI extends JFrame {
-	
+
     /** Auto-generated Serial Version UID */
-	private static final long serialVersionUID = 7605948922464541352L;
-	
-	private JLabel myInputLabel;
-	private JPanel myPanel;
-	private RegistersPanel myRegistersPanel;
-	private DataMemoryPanel myDataMemoryPanel;
-	private JTextArea myInputTextArea;
-	private JScrollPane myInputScrollPane;
+    private static final long serialVersionUID = 7605948922464541352L;
+
+    private JLabel myInputLabel;
+    private JPanel myPanel;
+    private RegistersPanel myRegistersPanel;
+    private DataMemoryPanel myDataMemoryPanel;
+    private JTextArea myInputTextArea;
+    private JScrollPane myInputScrollPane;
     JButton myAssembleButton;
     JButton myRunButton;
     private JPanel myButtonPanel;
     private Computer myComputer;
-	private JScrollPane myRegistersScrollPane;
-	private JScrollPane myDataMemoryScrollPane;
-    
+    private JScrollPane myRegistersScrollPane;
+    private JScrollPane myDataMemoryScrollPane;
+
     /**
      * Create a new GUI to display running MIPS programs
+     * 
      * @param computer the computer (back-end) used to simulate running MIPS
      */
-	private GUI(Computer computer) {
+    private GUI(Computer computer) {
         super("Mega Impressive Programming Simulator");
         myComputer = computer;
         myPanel = new JPanel();
@@ -51,7 +52,7 @@ public class GUI extends JFrame {
         myDataMemoryPanel = new DataMemoryPanel(computer.getDataMemory());
         myInputLabel = new JLabel("Input MIPS code below");
         myInputTextArea = new JTextArea(50, 20);
-		myInputTextArea.setFont(new Font( "Monospaced", Font.PLAIN, 12 ));
+        myInputTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         myInputScrollPane = new JScrollPane(myInputTextArea);
         myAssembleButton = new JButton("Assemble");
         myRunButton = new JButton("Run");
@@ -59,10 +60,10 @@ public class GUI extends JFrame {
         start();
 
     }
-	
-	/**
-	 * Initialize GUI components
-	 */
+
+    /**
+     * Initialize GUI components
+     */
     private void start() {
         // init stuff
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -76,10 +77,11 @@ public class GUI extends JFrame {
 
         // input text area
         myInputScrollPane.setSize(new Dimension(screenSize.width / 4, (int) Math.round(screenSize.height / 1.25)));
-        myInputScrollPane.setPreferredSize(new Dimension(screenSize.width / 4, (int) Math.round(screenSize.height / 1.25)));
+        myInputScrollPane
+                .setPreferredSize(new Dimension(screenSize.width / 4, (int) Math.round(screenSize.height / 1.25)));
         myPanel.add(myInputLabel);
         myPanel.add(myInputScrollPane);
-        
+
         // add padding between the text areas
         JPanel paddingPanel = new JPanel();
         paddingPanel.setBorder(new EmptyBorder(10, 0, 0, 10));
@@ -89,17 +91,17 @@ public class GUI extends JFrame {
         myButtonPanel.add(myAssembleButton);
         myButtonPanel.add(myRunButton);
         myPanel.add(myButtonPanel);
-        
+
         // registers and memory panels
         myRegistersScrollPane = new JScrollPane(myRegistersPanel);
         myDataMemoryScrollPane = new JScrollPane(myDataMemoryPanel);
         this.add(myRegistersScrollPane, BorderLayout.EAST);
         this.add(myDataMemoryScrollPane, BorderLayout.CENTER);
-        
+
         this.pack();
         setActionListeners();
     }
-    
+
     /**
      * Set the action listeners for the assemble and run buttons
      */
@@ -110,14 +112,14 @@ public class GUI extends JFrame {
                 ArrayList<String> inputLines = new ArrayList<String>();
                 Scanner sc = new Scanner(input);
                 while (sc.hasNextLine()) {
-                	inputLines.add(sc.nextLine());
+                    inputLines.add(sc.nextLine());
                 }
                 sc.close();
                 try {
-					myComputer.assemble(inputLines);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+                    myComputer.assemble(inputLines);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
