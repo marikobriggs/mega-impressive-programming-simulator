@@ -31,13 +31,18 @@ Multiple instruction formats are valid and will run within the Mega Impressive P
 * Case is ignored 
 * Registers can be entered with or without dollar signs 
 * Registers can be entered by their number or by register
+* Both commas and spaces are handled 
+
+### Error Handling 
+* 
+
 
 ## Tests
 
 JUnit tests were created for the Computer class and can be found under ``ComputerTest.java``. 
 
 ## UML Diagram 
-
+![UML Diagram](MIPS_UML.png)
 ## Built With
 
 * Java
