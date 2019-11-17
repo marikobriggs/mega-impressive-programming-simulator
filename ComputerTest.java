@@ -259,6 +259,17 @@ class ComputerTest {
 	 * Test method for {@link Computer#executeLw()}.
 	 */
 	@Test
+<<<<<<< HEAD
+	final void testExecuteLw() {
+		String inst = "LW $10,4(6)";
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		BitString[] registers = comp.getRegisters();
+
+		registers[11].setValue(5);
+		// put in t2
+		registers[12].setValue(6);
+=======
 	final void testExecuteLw() { // will test lw by loading from address 25 into $t1
 		
 		// set R[9] = 0, R[10] = 18
@@ -275,6 +286,7 @@ class ComputerTest {
 		String lwInst = "LW $t1, 7($t2)"; // lw with address in t2 offset by 7
 		ArrayList<String> instArr = new ArrayList<String>();
 		instArr.add(lwInst);
+>>>>>>> 8aa4257524a606890653ccfa199c97ad429ccecb
 
 		try {
 			comp.assemble(instArr);
@@ -282,8 +294,12 @@ class ComputerTest {
 			fail("Received unexpected IOException");
 		}
 		comp.execute();
+<<<<<<< HEAD
+		assertEquals(4, registers[10].getValue());
+=======
 
 		assertEquals(81, registers[9].getValue()); // make sure t1 got the loaded value (81)
+>>>>>>> 8aa4257524a606890653ccfa199c97ad429ccecb
 	}
 
 	/**
