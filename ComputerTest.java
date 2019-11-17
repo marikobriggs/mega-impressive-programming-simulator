@@ -46,11 +46,11 @@ class ComputerTest {
 		ArrayList<String> instArr = new ArrayList<String>();
 		instArr.add("ADDI $t5, $zero, 5");
 		instArr.add("ADDI $t4, $zero, 5");
-		instArr.add("BNE $t4, $t5, aLabel:"); // won't branch
+		instArr.add("BNE $t4, $t5, aLabel"); // won't branch, are equal
 		
 		instArr.add("ADDI $t5, $zero, 6");
 		instArr.add("ADDI $t4, $zero, 11");
-		instArr.add("BEQ $t4, $t5, aLabel:"); // won't branch
+		instArr.add("BEQ $t4, $t5, aLabel"); // won't branch, 6 != 11
 		
 		instArr.add("ADDI $t1, $zero, -81");
 		instArr.add("");
@@ -69,6 +69,8 @@ class ComputerTest {
 		
 		BitString[] registers = comp.getRegisters();
 		assertEquals(-81 | 5, registers[8].getValue2sComp());
+		assertEquals(6, registers[13].getValue2sComp());
+		assertEquals(11, registers[12].getValue2sComp());
 	}
 
 	/**
@@ -104,7 +106,8 @@ class ComputerTest {
 			comp.execute();
 		});
 	}
-
+	
+	
 	/**
 	 * Test method for {@link Computer#execute()}.
 	 */
@@ -130,6 +133,26 @@ class ComputerTest {
 		
 		BitString[] registers = comp.getRegisters();
 		assertEquals((5 + 3) & (81 | 6), registers[16].getValue2sComp());
+	}
+	
+	
+	/**
+	 * Test method for {@link Computer#assemble(java.util.List)}.
+	 */
+	@Test
+	final void testExecuteGarbage() {
+			List<String> instArray = new ArrayList<String>();
+			instArray.add("ADDalsdknf $52lk $asldkn 5infld");
+			instArray.add("ADDalsdknf $52lk $asldkn 5infld");
+			instArray.add("ADDalsdknf $52lk $asldkn 5infld");
+			instArray.add("ADDalsdknf $52lk $asldkn 5infld");
+			try {
+				comp.assemble(instArray);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			comp.execute();
 	}
 
 	/**
@@ -414,7 +437,7 @@ class ComputerTest {
 	@Test
 	final void testExecuteBne() {
 		ArrayList<String> instArr = new ArrayList<String>();
-		instArr.add("BNE $10, $11, LABEL");
+		instArr.add("BNE $10, $11, LABEL"); // will branch, not equal
 		instArr.add("ADDI $10, $11, 10");
 		instArr.add("LABEL: ADDI $10, $11, 1");
 		BitString[] registers = comp.getRegisters();
