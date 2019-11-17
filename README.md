@@ -2,13 +2,15 @@
 
 This project is a MIPS simulator created in Java with a GUI created in Java Swing. The GUI allows users to enter their MIPS code in a text area as well as allowing registers and memory to be viewed and modified. 
 
-
+## Contents 
   - [Project Decisions and Considerations](#project-decisions-and-considerations)
   - [How to Run the Program](#how-to-run-the-program)
     - [How to Enter Values into Register/Memory](#how-to-enter-values-into-registermemory)
     - [How to Format Instructions](#how-to-format-instructions)
   - [Not Handled by Our Simulator](#not-handled-by-our-simulator)
     - [Incorrect Code](#incorrect-code)
+    - [Zero](#zero)
+  - [Examples of Working Code](#examples-of-working-code)
   - [Tests](#tests)
   - [UML Diagram](#uml-diagram)
   - [Built With](#built-with)
@@ -42,13 +44,16 @@ Once you have downloaded the component files and started up the GUI,
 3. Enter the desired **decimal** value and press Enter to convert to binary 
 
 ### How to Format Instructions 
-Multiple instruction formats are valid and will run within the Mega Impressive Programming Simulator; however, the preferred method of input format is the same format as MARS. 
+Multiple instruction formats are valid and will run within the Mega Impressive Programming Simulator; however, the preferred method of input format is *generally* the same format as MARS. 
 
 * Case is ignored 
 * Registers can be entered with or without dollar signs 
 * Registers can be entered by their number or by register
 * Both commas and spaces are handled 
 * ``.data`` and ``.text`` are **not** handled 
+* 32 bit offset as opposed to byte offset, **unlike** MARS 
+
+[Click here](#examples-of-working-code) to jump to examples of proper code. 
 
 ## Not Handled by Our Simulator
 ### Incorrect Code 
@@ -56,11 +61,33 @@ Multiple instruction formats are valid and will run within the Mega Impressive P
 
 An example of some code that won't work: 
 ```
-ADDI $t1, $t2, $t3
+addi $t1, $t2, $t3
 ```
 ```
-LW $t1, $t2, $t3 
+ $t1, $t2, $t3 
 ```
+### Zero 
+The ``$zero`` register is not accomodated in our simulator. 
+
+## Examples of Working Code 
+The following code shows what kinds of instructions and formats are taken by our simulator. 
+
+The offset used in ``lw`` and ``sw`` is represented in single units as opposed to what you might see in MARS, as shown below: 
+
+In MARS
+```
+sw $s2, 4($t4)
+lw $s0, 8($t2)
+```
+In our simulator, the **equivalent** instructions are 
+```
+sw $s2, 1($t4)
+lw $s0, 2($t2)
+```
+
+
+Essentially, we divide by four. 
+
 
 ## Tests
 
