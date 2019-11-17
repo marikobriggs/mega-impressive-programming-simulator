@@ -31,7 +31,7 @@ This project is a MIPS simulator created in Java with a GUI created in Java Swin
 
 
 ## How to Run the Program 
-*The main method is in the GUI.* 
+*The main method is in the GUI.* A JAR file is provided as well. 
 
 Once you have downloaded the component files and started up the GUI, 
 1. Enter MIPS code into the main text box. Formatting is flexible and is described in more detail [below.](###How-to-format-instructions)
@@ -66,7 +66,7 @@ An example of some code that won't work:
 addi $t1, $t2, $t3
 ```
 ```
- $t1, $t2, $t3 
+$t1, $t2, $t3 
 ```
 ### Zero 
 The ``$zero`` register is 0 and will remain 0 until changed; however,  **it can be changed** and is not hardcoded to be 0. 
