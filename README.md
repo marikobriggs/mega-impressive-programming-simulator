@@ -72,7 +72,7 @@ The ``$zero`` register is 0 and will remain 0 until changed; however,  **it can 
 ## Examples of Working Code 
 The following code shows what kinds of instructions and formats are taken by our simulator. 
 
-The offset used in ``lw`` and ``sw`` is represented in single units as opposed to what you might see in MARS, as shown below: 
+* The offset used in ``lw`` and ``sw`` is represented in single units as opposed to what you might see in MARS, as shown below: 
 
 In MARS
 ```
@@ -89,6 +89,37 @@ Essentially, we divide by four.
 
 Other examples: 
 
+```
+ADDI $t0, $zero, 5
+ADDI $t1, $zero, 3
+ADD $t3, $t0, $t1
+
+ADDI $t4, $zero, 81
+ADDI $t5, $zero, 6
+OR $t6, $t4, $t5
+
+AND $s0, $t3, $t6
+```
+
+which outputs a result of ``0``.
+```
+ADDI $t5, $zero, 5
+ADDI $t4, $zero, 5
+BNE $t4, $t5, aLabel: 
+
+ADDI $t5, $zero, 6
+ADDI $t4, $zero, 11
+BEQ $t4, $t5, aLabel:
+
+ADDI $t1, $zero, -81
+
+
+
+ADDI $t2, $zero, 5
+OR $t0, $t1, $t2
+aLabel:
+```
+which outputs a result of ``-81``. 
 
 ## Tests
 
