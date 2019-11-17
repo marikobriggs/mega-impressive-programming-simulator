@@ -2,7 +2,7 @@
 
 This project is a MIPS simulator created in Java with a GUI created in Java Swing. The GUI allows users to enter their MIPS code in a text area as well as allowing registers and memory to be viewed and modified. 
 
-![Our GUI](images/../GUIScreenshot.png)
+![Our GUI](images/GUIScreenshot.png)
 
 ## Contents 
   - [Project Decisions and Considerations](#project-decisions-and-considerations)
