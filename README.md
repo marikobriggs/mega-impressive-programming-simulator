@@ -27,14 +27,16 @@ Once you have downloaded the component files and started up the GUI,
 3. Enter the desired **decimal** value and press Enter to convert to binary 
 
 ### How to Format Instructions 
-Multiple instruction formats are valid and will run within the Mega Impressive Programming Simulator. 
+Multiple instruction formats are valid and will run within the Mega Impressive Programming Simulator; however, the preferred method of input format is the same format as MARS. 
+
 * Case is ignored 
 * Registers can be entered with or without dollar signs 
 * Registers can be entered by their number or by register
 * Both commas and spaces are handled 
+* ``.data`` and ``.text`` are **not** handled 
 
 ### Error Handling 
-* 
+* The Mega Impressive Programming Simulator is not equipped to deal with bad code -- behavior under these conditions is unpredictable. Hopefully your code works! 
 
 
 ## Tests
