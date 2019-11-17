@@ -2,6 +2,8 @@
 
 This project is a MIPS simulator created in Java with a GUI created in Java Swing. The GUI allows users to enter their MIPS code in a text area as well as allowing registers and memory to be viewed and modified. 
 
+![Our GUI](images/../GUIScreenshot.png)
+
 ## Contents 
   - [Project Decisions and Considerations](#project-decisions-and-considerations)
   - [How to Run the Program](#how-to-run-the-program)
@@ -126,7 +128,7 @@ which outputs a result of ``-81``.
 JUnit tests were created for the Computer class and can be found under ``ComputerTest.java``. 
 
 ## UML Diagram 
-![UML Diagram](MIPS_UML.png)
+![UML Diagram](images/MIPS_UML.png)
 ## Built With
 
 * Java
