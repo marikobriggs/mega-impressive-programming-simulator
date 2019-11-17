@@ -31,7 +31,7 @@ This project is a MIPS simulator created in Java with a GUI created in Java Swin
 
 
 ## How to Run the Program 
-*The main method is in the GUI.* A JAR file is provided as well. 
+*The main method is in the GUI.* 
 
 Once you have downloaded the component files and started up the GUI, 
 1. Enter MIPS code into the main text box. Formatting is flexible and is described in more detail [below.](###How-to-format-instructions)
