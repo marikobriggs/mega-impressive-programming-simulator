@@ -134,8 +134,14 @@ public class Computer {
 	public void execute() {
 		myPC = 0;
 
+<<<<<<< HEAD
 		executeWhile: while (true) {
 
+=======
+		executeWhile: 
+		while (true) { 
+			
+>>>>>>> 8aa4257524a606890653ccfa199c97ad429ccecb
 			myIR = myInstMemory[myPC];
 			myPC++;
 

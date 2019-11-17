@@ -3,15 +3,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-/**
- * 
- */
 
 /**
  * @author mercedeschea
@@ -44,7 +39,18 @@ class ComputerTest {
 	 */
 	@Test
 	final void testGetRegisters() {
-		fail("Not yet implemented");
+		String inst = "ADDI $t1, $zero, $-127"; // $t1 should have -127
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(inst);
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+	 
+		BitString[] registers = comp.getRegisters();
+		assertEquals(-127, registers[9].getValue2sComp());
 	}
 
 	/**
@@ -67,7 +73,7 @@ class ComputerTest {
 	 * Test method for {@link Computer#parseRegistersRegMode()}.
 	 */
 	@Test
-	final void testParseRegistersRegMode() {
+	final void testParseRegistersRegMode() { //THIS NEED TO CHANGE!!!! ASDLFKJASDLKFAJSDFKAL**************
 		 String inst = "ADD $t1, $t2, $t3";
 		 ArrayList<String> instArr = new ArrayList<String>();
 		 instArr.add(inst.replaceAll("[$,]", " "));
@@ -253,6 +259,7 @@ class ComputerTest {
 	 * Test method for {@link Computer#executeLw()}.
 	 */
 	@Test
+<<<<<<< HEAD
 	final void testExecuteLw() {
 		String inst = "LW $10,4(6)";
 		ArrayList<String> instArr = new ArrayList<String>();
@@ -262,6 +269,24 @@ class ComputerTest {
 		registers[11].setValue(5);
 		// put in t2
 		registers[12].setValue(6);
+=======
+	final void testExecuteLw() { // will test lw by loading from address 25 into $t1
+		
+		// set R[9] = 0, R[10] = 18
+		BitString[] registers = comp.getRegisters();
+		registers[9].setValue2sComp(0); // set $t1 to 0
+		registers[10].setValue2sComp(18); // set $t2 to 18
+		
+		// set M[25] = 81
+		BitString[] memory = comp.getDataMemory();
+		BitString eightyOneBitString = new BitString(); // data to be loaded
+		eightyOneBitString.setValue2sComp(81);
+		memory[25] = eightyOneBitString;
+		
+		String lwInst = "LW $t1, 7($t2)"; // lw with address in t2 offset by 7
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(lwInst);
+>>>>>>> 8aa4257524a606890653ccfa199c97ad429ccecb
 
 		try {
 			comp.assemble(instArr);
@@ -269,15 +294,45 @@ class ComputerTest {
 			fail("Received unexpected IOException");
 		}
 		comp.execute();
+<<<<<<< HEAD
 		assertEquals(4, registers[10].getValue());
+=======
+
+		assertEquals(81, registers[9].getValue()); // make sure t1 got the loaded value (81)
+>>>>>>> 8aa4257524a606890653ccfa199c97ad429ccecb
 	}
 
 	/**
 	 * Test method for {@link Computer#executeSw()}.
 	 */
 	@Test
-	final void testExecuteSw() {
-		fail("Not yet implemented");
+	final void testExecuteSw() { // will test sw by storing the value 72 from register $s2 into address 53
+		
+		// offset = 25 + $t4 = 28 = 53
+		BitString[] registers = comp.getRegisters();
+		registers[12].setValue2sComp(28); // set $t4 to 28
+		
+		// set $s2 to 72
+		registers[18].setValue2sComp(72); // data to be stored
+		
+		// set M[53] = 0
+		BitString[] memory = comp.getDataMemory();
+		BitString zeroBitString = new BitString();
+		zeroBitString.setValue2sComp(0);
+		memory[53] = zeroBitString;
+		
+		String swInst = "SW $s2, 25($t4)"; // sw into M[53] using $t4 = 28 offset by 25
+		ArrayList<String> instArr = new ArrayList<String>();
+		instArr.add(swInst);
+
+		try {
+			comp.assemble(instArr);
+		} catch (IOException e) {
+			fail("Received unexpected IOException");
+		}
+		comp.execute();
+
+		assertEquals(72, registers[18].getValue()); // make sure $s2 got the loaded value (72)
 	}
 
 	/**
