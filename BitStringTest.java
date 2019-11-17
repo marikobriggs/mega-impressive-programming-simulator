@@ -31,7 +31,7 @@ public class BitStringTest {
 	public void testSetBitsOverLength() {
 		BitString bitString = new BitString();
 		try {
-			bitString.setBits(new char[17]);
+			bitString.setBits(new char[40]);
 			fail("SetBits failed");
 		} catch (IllegalArgumentException ie) {
 
@@ -87,18 +87,13 @@ public class BitStringTest {
 		} catch (IllegalArgumentException e) {
 
 		}
-		try {
-			bitString.setValue(65536);
-			fail("Can set more than max for unsigned");
-		} catch (IllegalArgumentException e) {
-
-		}
 
 	}
 
 	@Test
 	public void testSetValue() {
-		char ten[] = { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+		char ten[] = { '0', '0', '0', '0', '0', '0', '0', '0','0', '0', '0', '0', '0', 
+				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
 				'0', '1', '0', '1', '0' };
 
 		BitString bitString = new BitString();
@@ -109,33 +104,20 @@ public class BitStringTest {
 
 	@Test
 	public void testSetValue2sComp() {
-		char max[] = { '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+		char oneArray[] = { '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 
+				'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
 				'1', '1', '1', '1', '1' };
-		char min[] = { '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
-				'0', '0', '0', '0', '0' };
+		
+		char twoArray[] = { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 
+				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+				'0', '1', '0', '0', '0' };
 		BitString bitString = new BitString();
-		bitString.setValue2sComp(32767);
-		assertArrayEquals(bitString.getBits(), max);
-		bitString.setValue2sComp(-32768);
-		assertArrayEquals(bitString.getBits(), min);
+		bitString.setValue2sComp(-1);
+		assertArrayEquals(bitString.getBits(), oneArray);
+		bitString.setValue2sComp(8);
+		assertArrayEquals(bitString.getBits(), twoArray);
 	}
 
-	@Test
-	public void testSetValue2sCompInvalid() {
-		BitString bitString = new BitString();
-		try {
-			bitString.setValue2sComp(-32769);
-			fail("Can set negative value for 2s comp");
-		} catch (IllegalArgumentException e) {
-
-		}
-		try {
-			bitString.setValue2sComp(32768);
-			fail("Can set more than max for 2s comp");
-		} catch (IllegalArgumentException e) {
-
-		}
-	}
 
 	@Test
 	public void testGetValue() {
